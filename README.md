@@ -1,31 +1,41 @@
 # Idosos Conectados
 
-Projeto em Desenvolvimento
+**Projeto em Desenvolvimento**
 
-Aplicação web desenvolvida como projeto interdisciplinar do curso de Análise e Desenvolvimento de Sistemas com foco em inclusão digital para idosos.
+Aplicação web desenvolvida como projeto interdisciplinar do curso de Análise e Desenvolvimento de Sistemas (ADS), com foco na inclusão digital de idosos por meio de conteúdos educativos, acessibilidade e orientação sobre o uso seguro da tecnologia.
+
+---
 
 ## Objetivo
 
-Auxiliar idosos no uso seguro e consciente da tecnologia por meio de módulos educativos simples, acessíveis e intuitivos.
+O projeto **Idosos Conectados** foi criado para auxiliar idosos no aprendizado e utilização de ferramentas digitais do dia a dia, promovendo autonomia, segurança e inclusão digital.
+
+---
 
 ## Funcionalidades
 
-* Navegação simplificada
-* Interface adaptada para idosos
+* Interface simples e intuitiva
+* Navegação adaptada para idosos
 * Recursos de acessibilidade
+* Aumento e redução de fonte
+* Alto contraste
+* Conteúdo educativo organizado em módulos
 * Instalação como aplicativo (PWA)
-* Conteúdos educativos sobre tecnologia
-* Orientações de segurança digital
+* Layout responsivo para computadores e celulares
+
+---
 
 ## Módulos Disponíveis
 
-* Uso do Celular
-* WhatsApp
-* PIX
-* Inteligência Artificial
-* Segurança Digital
-* Prevenção de Golpes
-* Acompanhamento Familiar
+* 📱 Uso do Celular
+* 💬 WhatsApp
+* 💳 PIX
+* 🤖 Inteligência Artificial
+* 🔒 Segurança Digital
+* ⚠️ Prevenção de Golpes
+* 👨‍👩‍👧 Apoio para Familiares
+
+---
 
 ## Tecnologias Utilizadas
 
@@ -33,33 +43,102 @@ Auxiliar idosos no uso seguro e consciente da tecnologia por meio de módulos ed
 * CSS3
 * JavaScript
 * Progressive Web App (PWA)
+* Manifest.json
+* Service Worker
+
+---
+
+# Capturas de Tela
+
+## Tela Inicial (Desktop)
+
+![Tela Inicial Desktop](assets/screenshots/home-pc.png)
+
+## Tela Inicial (Mobile)
+
+![Tela Inicial Mobile](assets/screenshots/home-mobile.png)
+
+## Módulos (Desktop)
+
+![Módulos Desktop](assets/screenshots/modulos-pc.png)
+
+## Módulos (Mobile)
+
+![Módulos Mobile](assets/screenshots/modulos-mobile.png)
+
+## Recursos de Acessibilidade
+
+![Acessibilidade](assets/screenshots/acessibilidade.png)
+
+---
 
 ## Estrutura do Projeto
 
 ```text
 conecta-idosos/
+
 ├── icons/
+│   ├── 192.png
+│   ├── 512.png
+│   └── favicon.png
+│
 ├── js/
+│   └── desempenho.js
+│
 ├── paginas/
+│   ├── celular.html
+│   ├── familia.html
+│   ├── golpe.html
+│   ├── ia.html
+│   ├── pix.html
+│   ├── seguranca.html
+│   └── whatsapp.html
+│
+│
+├── sw.js/
+│   └── sw.js
+│
 ├── index.html
 ├── modulos.html
 ├── manifest.json
-└── sw.js
+│
+└──│
 ```
 
-## Status Atual
+---
 
-Versão Beta para testes e validação.
+## Status do Projeto
+
+Versão Beta para testes, validação e melhorias contínuas.
+
+---
 
 ## Limitações Conhecidas
 
-* Algumas funções de acessibilidade ainda não estão disponíveis em todas as páginas.
-* O modo de alto contraste ainda não é persistente em todos os módulos.
+* Algumas funcionalidades de acessibilidade ainda não estão disponíveis em todas as páginas.
+* O modo de alto contraste ainda precisa ser padronizado entre os módulos.
 * Algumas partes do código ainda precisam de refatoração e modularização.
-* Projeto em processo contínuo de melhoria.
+* O projeto continua em evolução com novas melhorias planejadas.
+
+---
+
+## Público-Alvo
+
+* Idosos que desejam aprender a utilizar tecnologias digitais.
+* Familiares que auxiliam idosos.
+* Projetos de inclusão digital.
+* Instituições educacionais e comunitárias.
+
+---
 
 ## Autor
 
-Guilherme Noé de Albuquerque
+**Guilherme Noé de Albuquerque**
 
-Projeto acadêmico desenvolvido para a disciplina de Projeto Interdisciplinar.
+Projeto desenvolvido como atividade interdisciplinar do curso de Análise e Desenvolvimento de Sistemas (ADS).
+
+---
+
+## Licença
+
+Projeto desenvolvido para fins acadêmicos e educacionais.
