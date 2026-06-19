@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Idosos Conectados - Bem-vindo</title>
+
+  <!-- Ícones e PWA -->
+  <link rel="icon" href="icons/favicon.png" />
+  <link rel="apple-touch-icon" href="icons/192.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a4fb4" />
+
+  <!-- Fontes (carregamento otimizado, não trava a página) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round&display=swap" onload="this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round&display=swap" /></noscript>
+
+  <link rel="stylesheet" href="css/estilo.css" />
+
+  <style>
+    :root {
+      --cor-fundo-1: #e3f0ff;
+      --cor-fundo-2: #ffffff;
+      --cor-texto:   #2d3748;
+      --cor-suave:   #718096;
+      --cor-barra:   #1a4fb4;
+
+      --idoso:        #2e8b57;
+      --idoso-claro:  #e8f8ef;
+      --idoso-borda:  #c6f0d8;
+
+      --familia:       #e63946;
+      --familia-titulo:#c0392b;
+      --familia-claro: #fdecec;
+      --familia-borda: #fbd5d5;
+
+      --raio:    22px;
+      --sombra:  0 4px 12px rgba(26,79,180,.08);
+      --sombra-hover: 0 14px 28px rgba(26,79,180,.15);
+      --transicao: .2s ease;
+    }
+
+    html { font-size: 16px; }
+    * { box-sizing: border-box; }
+
+    .material-icons-round {
+      font-family: 'Material Icons Round';
+      font-weight: normal; font-style: normal; line-height: 1;
+      letter-spacing: normal; text-transform: none; white-space: nowrap;
+      direction: ltr; -webkit-font-smoothing: antialiased;
+      font-display: swap; overflow: hidden; max-width: 1em;
+    }
+
+    body {
+      background: linear-gradient(170deg, var(--cor-fundo-1) 0%, var(--cor-fundo-2) 55%);
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0; min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: var(--cor-texto); padding: 1.5rem;
+      position: relative; overflow-x: hidden;
+    }
+
+    /* Skip link (acessibilidade) */
+    .skip-link {
+      position: absolute; left: -999px; top: 8px; z-index: 2000;
+      background: var(--cor-barra); color: #fff; padding: 12px 18px;
+      border-radius: 12px; font-weight: 700; font-size: 1.05rem;
+      text-decoration: none;
+    }
+    .skip-link:focus { left: 8px; outline: 3px solid #ffd600; }
+    body.contraste .skip-link { background: #000; color: #ffeb00; border: 2px solid #ffeb00; }
+
+    /* Detalhes decorativos discretos */
+    body::before, body::after {
+      content: ""; position: fixed; border-radius: 50%;
+      z-index: 0; filter: blur(4px); opacity: .18; pointer-events: none;
+    }
+    body::before { width: 220px; height: 220px; background: radial-gradient(circle, #7fb6ff, transparent 70%); bottom: -100px; left: -100px; }
+    body::after  { width: 220px; height: 220px; background: radial-gradient(circle, #a9d0ff, transparent 70%); bottom: -110px; right: -100px; }
+    body.contraste::before, body.contraste::after { display: none; }
+
+    /* Botão acessibilidade */
+    .fab-acessibilidade {
+      position: absolute; top: 16px; right: 16px; z-index: 1100;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--cor-barra); color: #fff; border: 3px solid #fff;
+      border-radius: 50px; padding: 12px 18px; font-size: 1.05rem;
+      font-weight: 800; cursor: pointer; box-shadow: 0 6px 18px rgba(26,79,180,.35);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .fab-acessibilidade:hover { transform: translateY(-2px); box-shadow: var(--sombra-hover); }
+    .fab-acessibilidade:active { transform: scale(.96); }
+    .fab-acessibilidade:focus-visible { outline: 3px solid #ffd600; outline-offset: 3px; }
+    .fab-acessibilidade .material-icons-round { font-size: 1.5rem; }
+
+    /* Painel acessibilidade */
+    .painel-acess-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; z-index: 1200; animation: fadeIn .25s ease; }
+    .painel-acess-overlay.aberto { display: block; }
+    .painel-acess {
+      position: fixed; top: 0; right: 0; height: 100%; width: 290px; max-width: 85%;
+      background: #fff; box-shadow: -8px 0 30px rgba(0,0,0,.25); padding: 1.4rem 1.2rem;
+      transform: translateX(100%); transition: transform .3s ease; z-index: 1250;
+      display: flex; flex-direction: column; gap: 12px; overflow-y: auto;
+    }
+    .painel-acess.aberto { transform: translateX(0); }
+    .painel-cabecalho { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #edf2f7; padding-bottom: 12px; margin-bottom: 4px; }
+    .painel-cabecalho h3 { margin: 0; font-size: 1.25rem; color: var(--cor-barra); display: inline-flex; align-items: center; gap: 8px; }
+    .painel-cabecalho h3 .material-icons-round { font-size: 1.6rem; }
+    .btn-fechar-painel { background: #edf2f7; border: none; border-radius: 50%; width: 42px; height: 42px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: var(--cor-texto); }
+    .btn-fechar-painel .material-icons-round { font-size: 1.6rem; }
+    .opcao-acess { display: flex; align-items: center; gap: 14px; width: 100%; background: #f7faff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 14px 16px; font-size: 1.15rem; font-weight: 700; color: #0d47a1; cursor: pointer; text-align: left; transition: all .2s ease; }
+    .opcao-acess:hover { background: #fff; border-color: var(--cor-barra); transform: translateX(-3px); }
+    .opcao-acess:active { transform: scale(.97); }
+    .opcao-acess .material-icons-round { font-size: 1.8rem; flex-shrink: 0; }
+
+    /* Foco visível universal — acessibilidade para teclado */
+    .opcao-acess:focus-visible,
+    .btn-explicar:focus-visible,
+    .btn-whatsapp:focus-visible,
+    .btn-instalar:focus-visible,
+    .btn-ouvir-modal:focus-visible,
+    .btn-fechar-modal:focus-visible,
+    .btn-fechar-painel:focus-visible {
+      outline: 3px solid #ffd600 !important;
+      outline-offset: 3px !important;
+    }
+
+    body.contraste .fab-acessibilidade { background: #000 !important; color: #ffeb00 !important; border-color: #ffeb00 !important; }
+    body.contraste .fab-acessibilidade .material-icons-round { color: #ffeb00 !important; }
+    body.contraste .painel-acess { background: #000 !important; border-left: 2px solid #ffeb00; }
+    body.contraste .painel-cabecalho { border-bottom-color: #ffeb00 !important; }
+    body.contraste .painel-cabecalho h3, body.contraste .painel-cabecalho h3 .material-icons-round { color: #ffeb00 !important; }
+    body.contraste .btn-fechar-painel { background: #111 !important; color: #ffeb00 !important; border: 2px solid #ffeb00; }
+    body.contraste .btn-fechar-painel .material-icons-round { color: #ffeb00 !important; }
+    body.contraste .opcao-acess { background: #111 !important; border-color: #ffeb00 !important; color: #ffeb00 !important; }
+    body.contraste .opcao-acess .material-icons-round { color: #ffeb00 !important; }
+
+    /* ====== CONTAINER PRINCIPAL ====== */
+    .boas-vindas { text-align: center; max-width: 520px; width: 100%; position: relative; z-index: 1; }
+    .bloco-apresentacao { display: flex; flex-direction: column; align-items: center; }
+    .bloco-escolhas { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+    .topo-logo { position: relative; display: inline-block; margin-bottom: 4px; }
+    .topo-logo::before { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 190px; height: 190px; background: radial-gradient(circle, rgba(143,196,255,.35), transparent 70%); border-radius: 50%; z-index: -1; }
+
+    .logo-img { width: 130px; height: 130px; border-radius: 28px; object-fit: cover; object-position: center; display: block; margin: 0 auto 14px; border: 4px solid #fff; box-shadow: 0 8px 24px rgba(26,79,180,.20); background: #fff; transition: transform .25s ease; }
+
+    .titulo-app { font-size: 1.8rem; font-weight: 800; color: var(--cor-barra); margin: 0 0 .3rem; }
+    .frase { font-size: 1.1rem; color: #3a4a63; margin-bottom: 1.5rem; font-weight: 600; }
+
+    .selo-seguranca { display: inline-flex; align-items: center; gap: 8px; background: #e8f0ff; color: var(--cor-barra); font-weight: 700; font-size: 1rem; padding: 8px 16px; border-radius: 50px; border: 2px solid #c7dbff; margin-bottom: 1.2rem; }
+    .selo-seguranca .material-icons-round { font-size: 1.3rem; }
+
+    .btn-explicar { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #fff; color: var(--cor-barra); border: 2px solid var(--cor-barra); font-size: 1.15rem; font-weight: 700; padding: .9rem 1.4rem; border-radius: 50px; cursor: pointer; margin-bottom: 1.8rem; box-shadow: var(--sombra); transition: transform var(--transicao), box-shadow var(--transicao); }
+    .btn-explicar:hover { transform: translateY(-2px); box-shadow: var(--sombra-hover); }
+    .btn-explicar:active { transform: scale(.97); }
+    .btn-explicar .material-icons-round { font-size: 1.5rem; }
+
+    .pergunta { font-size: 1.45rem; font-weight: 700; color: var(--cor-texto); margin-bottom: 1.4rem; }
+    .opcoes { display: flex; flex-direction: column; gap: 1.25rem; width: 100%; }
+
+    .perfil { display: flex; align-items: center; gap: 1.25rem; background: #fff; text-decoration: none; padding: 1.5rem; border-radius: var(--raio); border: 2px solid #e2e8f0; box-shadow: var(--sombra); position: relative; overflow: hidden; transition: transform var(--transicao), box-shadow var(--transicao), border-color var(--transicao); }
+    .perfil::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; border-radius: 6px 0 0 6px; background: var(--idoso); }
+    .perfil:hover { transform: translateY(-4px); box-shadow: var(--sombra-hover); }
+    .perfil:active { transform: scale(.98); }
+    .perfil:focus-visible { outline: 3px solid var(--cor-barra); outline-offset: 3px; }
+    .icone { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .icone .material-icons-round { font-size: 40px; max-width: none; }
+    .texto { flex: 1; text-align: left; }
+    .titulo { font-size: 1.5rem; font-weight: 800; display: block; }
+    .descricao { font-size: 1.05rem; font-weight: 500; color: var(--cor-suave); margin-top: .35rem; display: block; }
+    .seta { font-size: 1.75rem; color: #cbd5e0; flex-shrink: 0; transition: transform var(--transicao); }
+    .perfil:hover .seta { transform: translateX(5px); }
+
+    .perfil-idoso { border-color: var(--idoso-borda); }
+    .perfil-idoso::before { background: var(--idoso); }
+    .perfil-idoso .titulo { color: var(--idoso); }
+    .perfil-idoso .icone { background: var(--idoso-claro); }
+    .perfil-idoso .icone .material-icons-round { color: var(--idoso); }
+    .perfil-familia { border-color: var(--familia-borda); background: #fffafa; }
+    .perfil-familia::before { background: var(--familia); }
+    .perfil-familia .titulo { color: var(--familia-titulo); }
+    .perfil-familia .icone { background: var(--familia-claro); }
+    .perfil-familia .icone .material-icons-round { color: var(--familia); }
+
+    .rodape { margin-top: 1.5rem; color: var(--cor-suave); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    .rodape .material-icons-round { font-size: 1.1rem; color: var(--familia); }
+
+    .btn-whatsapp { margin-top: 1.25rem; background: #25d366; color: #fff; border: none; font-size: 1.2rem; font-weight: 700; padding: 1.1rem 1.5rem; border-radius: 16px; cursor: pointer; box-shadow: 0 6px 16px rgba(37,211,102,.3); transition: transform .2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; line-height: 1; }
+    .btn-whatsapp .material-icons-round { font-size: 1.4rem; }
+    .btn-whatsapp:active { transform: scale(.98); }
+
+    /* Botão instalar: visível para TODOS (o script decide a ação) */
+    .btn-instalar { margin-top: 1.25rem; background: var(--cor-barra); color: #fff; border: none; font-size: 1.2rem; font-weight: 700; padding: 1.1rem 1.5rem; border-radius: 16px; cursor: pointer; width: 100%; box-shadow: 0 6px 16px rgba(26,79,180,.3); transition: transform .2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; line-height: 1; }
+    .btn-instalar:active { transform: scale(.98); }
+    .btn-instalar.oculto { display: none; }
+
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; z-index: 1300; padding: 1.2rem; animation: fadeIn .25s ease; }
+    .modal-overlay.aberto { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-caixa { background: #fff; border-radius: 24px; max-width: 480px; width: 100%; padding: 2rem 1.7rem 1.7rem; box-shadow: 0 20px 50px rgba(0,0,0,.3); text-align: center; animation: subir .3s ease; max-height: 90vh; overflow-y: auto; }
+    @keyframes subir { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .icone-topo { width: 80px; height: 80px; border-radius: 50%; background: var(--idoso-claro); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+    .icone-topo .material-icons-round { font-size: 46px; color: var(--idoso); max-width: none; }
+    .modal-caixa h2 { font-size: 1.6rem; color: var(--cor-barra); margin: 0 0 1.2rem; }
+    .modal-item { display: flex; align-items: flex-start; gap: 12px; text-align: left; background: #f7faff; padding: 1rem; border-radius: 14px; margin-bottom: .8rem; }
+    .modal-item .material-icons-round { color: var(--cor-barra); font-size: 1.8rem; flex-shrink: 0; }
+    .modal-item p { margin: 0; font-size: 1.1rem; line-height: 1.45; }
+    .modal-item b { color: var(--cor-texto); }
+    .modal-botoes { display: flex; flex-direction: column; gap: .7rem; margin-top: 1.2rem; }
+    .btn-ouvir-modal { background: var(--idoso); color: #fff; border: none; font-size: 1.15rem; font-weight: 700; padding: 1rem; border-radius: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: transform .2s ease; }
+    .btn-ouvir-modal.falando { background: #c0392b; }
+    .btn-ouvir-modal:active { transform: scale(.98); }
+    .btn-fechar-modal { background: #edf2f7; color: var(--cor-texto); border: none; font-size: 1.1rem; font-weight: 700; padding: 1rem; border-radius: 14px; cursor: pointer; transition: transform .2s ease; }
+    .btn-fechar-modal:active { transform: scale(.98); }
+
+    /* Contraste geral */
+    body.contraste { background: #000 !important; color: #ffeb00 !important; }
+    body.contraste .frase, body.contraste .pergunta, body.contraste .rodape, body.contraste .titulo-app { color: #ffeb00 !important; }
+    body.contraste .perfil { background: #000 !important; color: #ffeb00 !important; border-color: #ffeb00 !important; }
+    body.contraste .perfil .titulo, body.contraste .perfil .descricao, body.contraste .perfil .seta { color: #ffeb00 !important; }
+    body.contraste .perfil .icone { background: #000 !important; }
+    body.contraste .perfil .icone .material-icons-round { color: #ffeb00 !important; }
+    body.contraste .rodape, body.contraste .rodape .material-icons-round { color: #ffeb00 !important; }
+    body.contraste .btn-whatsapp, body.contraste .btn-explicar, body.contraste .btn-instalar { background: #000 !important; color: #ffeb00 !important; border: 2px solid #ffeb00 !important; box-shadow: none !important; }
+    body.contraste .btn-whatsapp .material-icons-round, body.contraste .btn-explicar .material-icons-round, body.contraste .btn-instalar .material-icons-round { color: #ffeb00 !important; }
+    body.contraste .modal-caixa { background: #000 !important; border: 2px solid #ffeb00; }
+    body.contraste .modal-caixa h2, body.contraste .modal-item p, body.contraste .modal-item b, body.contraste .modal-item .material-icons-round, body.contraste .icone-topo .material-icons-round { color: #ffeb00 !important; }
+    body.contraste .modal-item { background: #111 !important; }
+    body.contraste .icone-topo { background: #111 !important; }
+    body.contraste .btn-fechar-modal { background: #111 !important; color: #ffeb00 !important; border: 2px solid #ffeb00; }
+
+    /* VERSÃO DESKTOP (≥ 992px) — mobile continua igual */
+    @media (min-width: 992px) {
+      body { padding: 3rem; }
+      .boas-vindas { max-width: 1000px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; background: rgba(255,255,255,.65); border: 1px solid rgba(143,196,255,.45); border-radius: 32px; padding: 3.2rem 3.5rem; box-shadow: 0 20px 50px rgba(26,79,180,.12); backdrop-filter: blur(4px); }
+      .bloco-apresentacao { align-items: flex-start; text-align: left; }
+      .bloco-apresentacao .titulo-app { font-size: 2.5rem; }
+      .bloco-apresentacao .frase { font-size: 1.3rem; }
+      .bloco-apresentacao .btn-explicar { margin-bottom: 0; }
+      .topo-logo::before { width: 220px; height: 220px; }
+      .logo-img { width: 150px; height: 150px; margin: 0 0 16px; }
+      .bloco-escolhas { align-items: stretch; }
+      .bloco-escolhas .pergunta { text-align: left; font-size: 1.6rem; }
+      .bloco-escolhas .rodape { justify-content: flex-start; }
+      .bloco-escolhas .btn-whatsapp, .bloco-escolhas .btn-instalar { width: 100%; }
+      .perfil { padding: 1.6rem 1.8rem; }
+      .fab-acessibilidade { top: 24px; right: 30px; }
+      body.contraste .boas-vindas { background: #000 !important; border-color: #ffeb00; }
+    }
+    @media (min-width: 1400px) { .boas-vindas { max-width: 1120px; } }
+
+    /* Mobile pequeno */
+    @media (max-width: 480px) {
+      .fab-acessibilidade { padding: 11px 15px; font-size: .95rem; top: 12px; right: 12px; }
+      .fab-acessibilidade .material-icons-round { font-size: 1.35rem; }
+      .boas-vindas { margin-top: 4.5rem; }
+      body::before, body::after { width: 150px; height: 150px; bottom: -70px; left: -70px; }
+    }
+
+    /* Animação entrada */
+    .fade-in { opacity: 0; transform: translateY(20px); animation: entrar .6s ease forwards; }
+    .fade-in:nth-child(2) { animation-delay: .1s; }
+    .fade-in:nth-child(3) { animation-delay: .2s; }
+    @keyframes entrar { to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) { .fade-in { animation: none; opacity: 1; transform: none; } }
+  </style>
+</head>
+
+<body>
+
+<!-- Pular para o conteúdo (acessibilidade) -->
+<a href="#conteudoPrincipal" class="skip-link">Pular para o conteúdo</a>
+
+<!-- Botão acessibilidade -->
+<button class="fab-acessibilidade" id="fabAcess" onclick="abrirPainelAcess()"
+        aria-label="Abrir opções de acessibilidade" aria-expanded="false" aria-controls="painelAcess">
+  <span class="material-icons-round">settings_accessibility</span> Acessibilidade
+</button>
+
+<!-- Painel acessibilidade -->
+<div class="painel-acess-overlay" id="painelOverlay" onclick="fecharPainelAcess()"></div>
+<aside class="painel-acess" id="painelAcess" role="dialog" aria-modal="true" aria-label="Opções de acessibilidade">
+  <div class="painel-cabecalho">
+    <h3><span class="material-icons-round">settings_accessibility</span> Acessibilidade</h3>
+    <button class="btn-fechar-painel" onclick="fecharPainelAcess()" aria-label="Fechar"><span class="material-icons-round">close</span></button>
+  </div>
+  <button class="opcao-acess" onclick="aumentarFonte()"><span class="material-icons-round">text_increase</span> Letra maior</button>
+  <button class="opcao-acess" onclick="diminuirFonte()"><span class="material-icons-round">text_decrease</span> Letra menor</button>
+  <button class="opcao-acess" onclick="alternarContraste()"><span class="material-icons-round">contrast</span> Contraste</button>
+  <button class="opcao-acess" onclick="ouvirTela()"><span class="material-icons-round">volume_up</span> Ouvir a tela</button>
+  <button class="opcao-acess" onclick="resetarFonte()"><span class="material-icons-round">restart_alt</span> Tamanho normal</button>
+</aside>
+
+<main class="boas-vindas" id="conteudoPrincipal">
+
+  <!-- COLUNA ESQUERDA: APRESENTAÇÃO -->
+  <div class="bloco-apresentacao fade-in">
+    <span class="topo-logo">
+      <img src="icons/192.png" alt="Logo Idoso Conectado" class="logo-img" width="130" height="130" />
+    </span>
+    <h1 class="titulo-app">Idosos Conectados</h1>
+    <p class="frase">Aprenda a usar o celular com calma e confiança 💙</p>
+    <span class="selo-seguranca">
+      <span class="material-icons-round">verified_user</span> 100% seguro e gratuito
+    </span>
+    <button class="btn-explicar" onclick="abrirExplicacao()" aria-label="Saiba o que é este aplicativo, com áudio">
+      <span class="material-icons-round">help_outline</span> O que é isso? Toque e ouça
+    </button>
+  </div>
+
+  <!-- COLUNA DIREITA: ESCOLHAS -->
+  <div class="bloco-escolhas fade-in">
+    <p class="pergunta">Quem é você?</p>
+    <nav class="opcoes" aria-label="Escolha seu perfil">
+      <a class="perfil perfil-idoso" href="modulos.html" aria-label="Sou Idoso, quero aprender passo a passo">
+        <span class="icone"><span class="material-icons-round">elderly</span></span>
+        <span class="texto">
+          <span class="titulo">Sou Idoso</span>
+          <span class="descricao">Quero aprender passo a passo</span>
+        </span>
+        <span class="seta" aria-hidden="true">›</span>
+      </a>
+      <a class="perfil perfil-familia" href="paginas/familia.html" aria-label="Sou Família, quero ajudar alguém querido">
+        <span class="icone"><span class="material-icons-round">favorite</span></span>
+        <span class="texto">
+          <span class="titulo">Sou Familiar</span>
+          <span class="descricao">Quero ajudar alguém querido</span>
+        </span>
+        <span class="seta" aria-hidden="true">›</span>
+      </a>
+    </nav>
+    <p class="rodape"><span class="material-icons-round">favorite</span> Feito com carinho para você</p>
+    <button class="btn-whatsapp" onclick="compartilharWhatsApp()">
+      <span class="material-icons-round">share</span> Indicar para um amigo
+    </button>
+    <!-- Botão instalar: visível para todos -->
+    <button class="btn-instalar" id="btnInstalar">
+      <span class="material-icons-round">install_mobile</span>
+      <span id="textoInstalar">Instalar o Aplicativo</span>
+    </button>
+  </div>
+
+</main>
+
+<!-- Modal explicativo -->
+<div class="modal-overlay" id="modalExplicacao" onclick="fecharSeFora(event)">
+  <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloModal">
+    <div class="icone-topo"><span class="material-icons-round">volunteer_activism</span></div>
+    <h2 id="tituloModal">Seja bem-vindo! 💙</h2>
+    <div class="modal-item"><span class="material-icons-round">phone_iphone</span><p><b>O que é?</b> Ensina você a usar o celular com calma, no seu tempo.</p></div>
+    <div class="modal-item"><span class="material-icons-round">school</span><p><b>Para que serve?</b> Usar WhatsApp, fazer PIX, ligar e fazer chamada de vídeo.</p></div>
+    <div class="modal-item"><span class="material-icons-round">elderly</span><p><b>Para quem é?</b> Para quem está começando agora, sem complicação.</p></div>
+    <div class="modal-item"><span class="material-icons-round">verified_user</span><p><b>É seguro?</b> Sim! Passo a passo, sem medo de errar.</p></div>
+    <div class="modal-item"><span class="material-icons-round">family_restroom</span><p><b>E a família?</b> Filhos e netos podem aprender junto com você. 💙</p></div>
+    <div class="modal-item"><span class="material-icons-round">groups</span><p><b>Por que indicar?</b> Ajude amigos a perderem o medo do celular.</p></div>
+    <div class="modal-botoes">
+      <button class="btn-ouvir-modal" id="btnOuvirModal" onclick="ouvirExplicacao()">
+        <span class="material-icons-round">volume_up</span>
+        <span id="textoOuvir">Ouvir explicação</span>
+      </button>
+      <button class="btn-fechar-modal" onclick="fecharExplicacao()">Entendi, fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: passo a passo de instalação (iPhone e outros navegadores) -->
+<div class="modal-overlay" id="modalInstalar" onclick="fecharSeForaInstalar(event)">
+  <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloInstalar">
+    <div class="icone-topo"><span class="material-icons-round">install_mobile</span></div>
+    <h2 id="tituloInstalar">Como instalar no seu celular</h2>
+    <div id="passosInstalar"></div>
+    <div class="modal-botoes">
+      <button class="btn-fechar-modal" onclick="fecharInstalar()">Entendi, fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* === Painel acessibilidade === */
+  function abrirPainelAcess(){
+    document.getElementById('painelAcess').classList.add('aberto');
+    document.getElementById('painelOverlay').classList.add('aberto');
+    document.getElementById('fabAcess').setAttribute('aria-expanded','true');
+    document.querySelector('#painelAcess .btn-fechar-painel').focus();
+  }
+  function fecharPainelAcess(){
+    document.getElementById('painelAcess').classList.remove('aberto');
+    document.getElementById('painelOverlay').classList.remove('aberto');
+    const fab = document.getElementById('fabAcess');
+    fab.setAttribute('aria-expanded','false');
+    fab.focus();
+  }
+
+  /* === Fonte === */
+  let tamanhoBase = 16;
+  function aplicarFonte(){ document.documentElement.style.fontSize = tamanhoBase + 'px'; localStorage.setItem('fonteBase', tamanhoBase); }
+  function aumentarFonte(){ if(tamanhoBase < 24){ tamanhoBase += 2; aplicarFonte(); } }
+  function diminuirFonte(){ if(tamanhoBase > 12){ tamanhoBase -= 2; aplicarFonte(); } }
+  function resetarFonte(){ tamanhoBase = 16; aplicarFonte(); }
+
+  /* === Contraste === */
+  function alternarContraste(){ document.body.classList.toggle('contraste'); localStorage.setItem('contraste', document.body.classList.contains('contraste') ? '1' : '0'); }
+
+  /* === Ouvir a tela === */
+  function ouvirTela(){
+    if(!('speechSynthesis' in window)){ alert('Seu celular não tem leitura em voz. 💙'); return; }
+    falar("Idosos Conectados. Aprenda a usar o celular com calma e confiança. Quem é você? Sou idoso, quero aprender passo a passo. Sou familiar, quero ajudar alguém querido.");
+  }
+  function falar(texto){
+    if(!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(texto);
+    u.lang = 'pt-BR'; u.rate = .9;
+    window.speechSynthesis.speak(u);
+  }
+
+  /* === Modal explicação === */
+  function abrirExplicacao(){ document.getElementById('modalExplicacao').classList.add('aberto'); }
+  function fecharExplicacao(){ document.getElementById('modalExplicacao').classList.remove('aberto'); if(window.speechSynthesis) window.speechSynthesis.cancel(); }
+  function fecharSeFora(e){ if(e.target.id === 'modalExplicacao') fecharExplicacao(); }
+  function ouvirExplicacao(){
+    if(!('speechSynthesis' in window)){
+      alert('Seu celular não tem leitura em voz. Mas você pode ler o texto na tela. 💙');
+      return;
+    }
+    const btn = document.getElementById('btnOuvirModal');
+    const txt = document.getElementById('textoOuvir');
+    if(window.speechSynthesis.speaking){
+      window.speechSynthesis.cancel();
+      btn.classList.remove('falando'); txt.textContent = 'Ouvir explicação'; return;
+    }
+    const texto = "Este aplicativo ensina você a usar o celular com calma, no seu tempo. Serve para usar WhatsApp, fazer Pix, ligar e fazer chamada de vídeo. É para quem está começando agora, sem complicação. É seguro, passo a passo, sem medo de errar. A família pode aprender junto com você.";
+    const u = new SpeechSynthesisUtterance(texto);
+    u.lang = 'pt-BR'; u.rate = .9;
+    u.onend = () => { btn.classList.remove('falando'); txt.textContent = 'Ouvir explicação'; };
+    btn.classList.add('falando'); txt.textContent = 'Parar';
+    window.speechSynthesis.speak(u);
+  }
+
+  /* === Compartilhar WhatsApp === */
+  function compartilharWhatsApp(){
+    const urlSite = "https://idosos-conectados.netlify.app";
+    const msg = encodeURIComponent("Olha esse app que ensina a usar o celular: Idosos Conectados! " + urlSite);
+    window.open("https://wa.me/?text=" + msg, "_blank");
+  }
+
+  /* ============================================================
+     INSTALAR O APP — funciona em TODOS os celulares
+     - Android/Chrome: instalação automática do navegador
+     - iPhone/Safari ou outros: mostra um passo a passo
+     ============================================================ */
+  const btnInstalar     = document.getElementById('btnInstalar');
+  const modalInstalar   = document.getElementById('modalInstalar');
+  const passosInstalar  = document.getElementById('passosInstalar');
+  let promptInstalacao  = null;
+
+  const ua = navigator.userAgent || '';
+  const ehiOS = /iphone|ipad|ipod/i.test(ua);
+
+  function appJaInstalado(){
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+
+  // Android avisa que dá para instalar: guardamos o convite
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    promptInstalacao = e;
+  });
+
+  // Monta os passos conforme o aparelho
+  function montarPassosInstalar(){
+    if (ehiOS) {
+      passosInstalar.innerHTML = `
+        <div class="modal-item"><span class="material-icons-round">ios_share</span><p>1. Toque no botão <b>Compartilhar</b> (o quadradinho com a seta para cima), na barra do Safari.</p></div>
+        <div class="modal-item"><span class="material-icons-round">add_box</span><p>2. Escolha <b>"Adicionar à Tela de Início"</b>.</p></div>
+        <div class="modal-item"><span class="material-icons-round">check_circle</span><p>3. Toque em <b>"Adicionar"</b>. Pronto! O app aparece na sua tela.</p></div>
+      `;
+    } else {
+      passosInstalar.innerHTML = `
+        <div class="modal-item"><span class="material-icons-round">more_vert</span><p>1. Toque no botão de <b>menu</b> (os três pontinhos), no canto do navegador.</p></div>
+        <div class="modal-item"><span class="material-icons-round">add_to_home_screen</span><p>2. Escolha <b>"Instalar aplicativo"</b> ou <b>"Adicionar à tela inicial"</b>.</p></div>
+        <div class="modal-item"><span class="material-icons-round">check_circle</span><p>3. Confirme. Pronto! O app aparece na sua tela.</p></div>
+      `;
+    }
+  }
+
+  function abrirInstalar(){ montarPassosInstalar(); modalInstalar.classList.add('aberto'); }
+  function fecharInstalar(){ modalInstalar.classList.remove('aberto'); }
+  function fecharSeForaInstalar(e){ if(e.target.id === 'modalInstalar') fecharInstalar(); }
+
+  // Ao tocar em "Instalar"
+  btnInstalar.addEventListener('click', async () => {
+    if (promptInstalacao) {
+      promptInstalacao.prompt();
+      await promptInstalacao.userChoice;
+      promptInstalacao = null;
+      return;
+    }
+    abrirInstalar();
+  });
+
+  // Ajusta o botão ao abrir a página
+  (function ajustarBotaoInstalar(){
+    if (appJaInstalado()) { btnInstalar.classList.add('oculto'); return; }
+    if (ehiOS) { document.getElementById('textoInstalar').textContent = 'Como instalar o App'; }
+  })();
+
+  // Se instalar, esconde o botão
+  window.addEventListener('appinstalled', () => btnInstalar.classList.add('oculto'));
+
+  /* === Restaurar preferências === */
+  (function(){
+    const f = parseInt(localStorage.getItem('fonteBase'), 10);
+    if(!isNaN(f) && f >= 12 && f <= 24){ tamanhoBase = f; aplicarFonte(); }
+    if(localStorage.getItem('contraste') === '1') document.body.classList.add('contraste');
+  })();
+
+  /* === Tecla ESC fecha tudo === */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { fecharPainelAcess(); fecharExplicacao(); fecharInstalar(); }
+  });
+</script>
+
+</body>
+</html>

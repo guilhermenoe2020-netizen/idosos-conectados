@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  
+  <!-- ===== FAVICON (logo na aba) ===== -->
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/favicon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../icons/favicon.png">
+<link rel="shortcut icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/favicon.png">
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fazendo um PIX - Idosos Conectados</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Arial,sans-serif;font-size:18px;line-height:1.6;color:#222;background:#eef5ef;}
+
+  /* ===== ÍCONES SVG ===== */
+  .ico{display:inline-flex;vertical-align:middle;width:1em;height:1em;}
+  .ico svg{width:100%;height:100%;display:block;}
+
+  header{background:#2e7d32;color:#fff;padding:16px;display:flex;align-items:center;gap:14px;}
+  header h1{font-size:24px;display:flex;align-items:center;gap:10px;}
+  .btn-voltar{background:#fff;color:#2e7d32;text-decoration:none;font-weight:bold;
+              padding:10px 18px;border-radius:25px;flex-shrink:0;
+              display:inline-flex;align-items:center;gap:6px;}
+
+  main{max-width:600px;margin:0 auto;padding:24px 16px;}
+  .intro{font-size:20px;margin-bottom:20px;text-align:center;position:relative;}
+
+  /* ===== BOTÃO OUVIR ===== */
+  .btn-ouvir{
+    background:#e8f5e9;color:#2e7d32;border:2px solid #a5d6a7;
+    border-radius:50%;width:50px;height:50px;padding:0;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:transform .12s;overflow:hidden;font-size:0;line-height:0;flex-shrink:0;
+  }
+  .btn-ouvir .ico{width:24px;height:24px;font-size:24px;flex-shrink:0;}
+  .btn-ouvir:active{transform:scale(.96);}
+  .btn-ouvir:focus-visible{outline:3px solid #2e7d32;outline-offset:2px;}
+  .btn-ouvir.falando{background:#2e7d32;color:#fff;border-color:#fff;}
+
+  h2.secao{font-size:23px;color:#2e7d32;margin:28px 0 14px;
+           border-bottom:3px solid #66bb6a;padding-bottom:6px;
+           display:flex;align-items:center;gap:10px;}
+  h2.secao .ico{width:26px;height:26px;}
+
+/* ===== CARD DICA ===== */
+.dica{
+  background:#fff;
+  border-radius:14px;
+  padding:16px;
+  margin:14px 0;
+  box-shadow:0 2px 6px rgba(0,0,0,0.12);
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+}
+.dica .icone{flex-shrink:0;width:48px;height:48px;border-radius:12px;
+      background:#e8f5e9;color:#2e7d32;display:flex;align-items:center;justify-content:center;}
+.dica .icone .ico{width:28px;height:28px;}
+.dica > div{position:relative;flex:1;min-width:0;padding-right:58px;}
+.dica h3{font-size:19px;color:#2e7d32;margin-bottom:4px;}
+.dica p{margin-bottom:8px;}
+.dica .btn-ouvir{position:absolute;top:-2px;right:0;margin-top:0 !important;}
+
+  /* ===== AVISO (check no topo + texto alinhado) ===== */
+  .aviso{
+    margin-top:12px;background:#e8f5e9;border-left:5px solid #2e7d32;
+    padding:12px 14px;border-radius:8px;font-size:16px;color:#1b5e20;
+    display:flex;align-items:flex-start;gap:10px;line-height:1.5;
+  }
+  .aviso .ico{width:22px;height:22px;color:#2e7d32;flex-shrink:0;margin-top:2px;}
+  .aviso > span:not(.ico){flex:1;margin:0;text-align:left;}
+
+  /* ===== ALERTAS ===== */
+  .alerta{background:#fff3e0;border-left:6px solid #ef6c00;padding:16px 70px 16px 16px;
+          border-radius:10px;margin:18px 0;font-size:18px;
+          display:flex;align-items:flex-start;gap:10px;position:relative;}
+  .alerta > .ico{width:26px;height:26px;color:#ef6c00;flex-shrink:0;margin-top:2px;}
+
+  .alerta-vermelho{background:#ffebee;border-left:6px solid #c62828;padding:16px 70px 16px 16px;
+          border-radius:10px;margin:18px 0;font-size:18px;color:#b71c1c;
+          display:flex;align-items:flex-start;gap:10px;position:relative;}
+  .alerta-vermelho > .ico{width:26px;height:26px;color:#c62828;flex-shrink:0;margin-top:2px;}
+
+  .alerta .btn-ouvir,.alerta-vermelho .btn-ouvir{
+    position:absolute;top:50%;right:14px;transform:translateY(-50%);margin-top:0 !important;
+  }
+  .alerta .btn-ouvir.falando,.alerta-vermelho .btn-ouvir.falando{
+    transform:translateY(-50%) scale(1);
+  }
+  .alerta .btn-ouvir{background:#ffe0b2;color:#ef6c00;border-color:#ffb74d;}
+  .alerta .btn-ouvir.falando{background:#ef6c00;color:#fff;border-color:#fff;}
+  .alerta-vermelho .btn-ouvir{background:#ffcdd2;color:#c62828;border-color:#ef9a9a;}
+  .alerta-vermelho .btn-ouvir.falando{background:#c62828;color:#fff;border-color:#fff;}
+
+  .ouvir-centro{display:flex;justify-content:center;margin-top:10px;}
+
+  .progresso{text-align:center;font-weight:bold;color:#2e7d32;font-size:18px;margin-bottom:16px;}
+
+  .celular{max-width:340px;margin:0 auto;background:#111;border-radius:34px;
+           padding:12px;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+  .tela{position:relative;background:#f1f8f3;border-radius:24px;overflow:hidden;
+        min-height:560px;display:flex;flex-direction:column;}
+
+  .topo{background:#2e7d32;color:#fff;padding:14px;display:flex;align-items:center;gap:10px;}
+  .topo .logo{width:40px;height:40px;border-radius:10px;background:#1b5e20;
+              display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+  .topo .nome-banco{font-weight:bold;font-size:17px;}
+  .topo .sub{font-size:13px;opacity:0.85;}
+
+  .conteudo{flex:1;padding:16px;display:flex;flex-direction:column;gap:14px;}
+  .cenario-txt{background:#fff;border-radius:12px;padding:14px;font-size:16px;
+               box-shadow:0 1px 3px rgba(0,0,0,0.15);text-align:center;}
+  .cenario-txt b{color:#2e7d32;}
+
+  .instrucao{background:#fffde7;border-top:2px solid #f0e6a0;padding:14px;
+    font-size:16px;font-weight:bold;color:#5d4037;text-align:center;}
+
+  .feedback{padding:14px;font-size:16px;font-weight:bold;display:none;text-align:center;}
+  .acertou{background:#e8f5e9;color:#2e7d32;}
+  .errou{background:#ffebee;color:#c62828;}
+  .btn-proximo{display:none;width:calc(100% - 24px);margin:0 12px 14px;background:#2e7d32;
+    color:#fff;font-size:18px;font-weight:bold;padding:14px;border:none;border-radius:12px;cursor:pointer;}
+
+  .visor{background:#fff;border:2px solid #c8e6c9;border-radius:14px;padding:18px;
+         text-align:center;font-size:32px;font-weight:bold;color:#1b5e20;min-height:70px;
+         display:flex;align-items:center;justify-content:center;letter-spacing:1px;}
+  .visor .moeda{font-size:22px;color:#888;margin-right:6px;}
+  .visor.vazio{color:#bbb;}
+  .visor.chave{font-size:24px;letter-spacing:2px;}
+  .rotulo-campo{font-size:15px;font-weight:bold;color:#555;margin-bottom:-6px;}
+
+  .teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .teclado button{font-size:26px;font-weight:bold;padding:16px 0;border:none;border-radius:12px;
+    background:#fff;color:#222;box-shadow:0 2px 5px rgba(0,0,0,0.15);cursor:pointer;}
+  .teclado button:active{transform:scale(0.92);background:#e8f5e9;}
+  .teclado .apagar{background:#ffcdd2;color:#c62828;}
+
+  .conferir{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+  .linha-conf{display:flex;justify-content:space-between;padding:10px 0;
+              border-bottom:1px solid #eee;font-size:17px;}
+  .linha-conf:last-child{border-bottom:none;}
+  .linha-conf .lab{color:#777;}
+  .linha-conf .val{font-weight:bold;color:#222;text-align:right;}
+  .destaque-nome{font-size:20px;color:#1b5e20;}
+  .destaque-valor{font-size:22px;color:#2e7d32;}
+  .botoes-conf{display:flex;gap:10px;margin-top:14px;}
+  .botoes-conf button{flex:1;font-size:17px;font-weight:bold;padding:14px;
+    border:none;border-radius:12px;cursor:pointer;}
+  .bt-confirma{background:#2e7d32;color:#fff;}
+  .bt-cancela{background:#eee;color:#555;}
+
+  .msg-golpe{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+  .msg-golpe .de{font-size:14px;color:#888;margin-bottom:6px;}
+  .msg-golpe .texto{font-size:17px;background:#e8f0fe;padding:14px;border-radius:12px;line-height:1.5;}
+  .escolhas{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+  .escolhas button{font-size:17px;font-weight:bold;padding:15px;border:2px solid #ddd;
+    border-radius:12px;cursor:pointer;text-align:left;background:#fff;color:#444;}
+  .escolhas button:active{transform:scale(0.98);}
+  .escolhas button.certo-ok{background:#e8f5e9;color:#2e7d32;border-color:#66bb6a;}
+
+  .qr-box{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .camera{width:230px;height:230px;border-radius:18px;background:#263238;position:relative;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .qr-img{width:130px;height:130px;background:
+     repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 / 26px 26px;
+     border:8px solid #fff;border-radius:6px;transition:transform .3s;}
+  .camera.lendo .qr-img{transform:scale(1.12);}
+  .moldura{position:absolute;inset:18px;border:3px solid rgba(255,255,255,.5);border-radius:12px;}
+  .linha-scan{position:absolute;left:10%;right:10%;height:4px;background:#66bb6a;top:12%;
+    box-shadow:0 0 12px #66bb6a;display:none;}
+  .camera.lendo .linha-scan{display:block;animation:scan 1s linear infinite;}
+  @keyframes scan{0%{top:14%;}100%{top:82%;}}
+  .btn-escanear{width:100%;background:#2e7d32;color:#fff;font-size:19px;font-weight:bold;
+    padding:15px;border:none;border-radius:14px;cursor:pointer;}
+  .btn-escanear:active{transform:scale(0.97);}
+  .btn-escanear:disabled{background:#bdbdbd;}
+
+  .resultado{display:none;background:#fff;border-radius:16px;padding:30px 20px;
+    text-align:center;margin-top:20px;box-shadow:0 3px 10px rgba(0,0,0,0.15);}
+  .nota{font-size:44px;font-weight:bold;color:#66bb6a;margin:10px 0;}
+  .barra-fundo{background:#e0e0e0;border-radius:20px;height:28px;overflow:hidden;margin:18px 0;}
+  .barra-cheia{background:#66bb6a;height:100%;width:0;transition:width 0.8s;border-radius:20px;}
+
+  footer{text-align:center;padding:30px 16px;}
+  .btn-inicio{display:inline-flex;align-items:center;gap:8px;background:#2e7d32;color:#fff;text-decoration:none;
+    font-size:20px;font-weight:bold;padding:16px 28px;border-radius:30px;}
+/* ===== ACESSIBILIDADE: REDUZIR MOVIMENTO ===== */
+@media (prefers-reduced-motion: reduce){
+  .btn-ouvir.falando,.dica:hover{animation:none;transform:none;}
+}
+
+</style>
+
+
+
+</style>
+</head>
+<body>
+
+<!-- ===== SVG ÍCONES ===== -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-money" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><path fill="currentColor" d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path fill="currentColor" d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></symbol>
+  <symbol id="i-touch" viewBox="0 0 24 24"><path fill="currentColor" d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
+</svg>
+
+<header>
+  <a href="../modulos.html" class="btn-voltar"><span class="ico"><svg><use href="#i-back"/></svg></span> Voltar</a>
+  <h1><span class="ico"><svg><use href="#i-money"/></svg></span> Fazendo um PIX</h1>
+</header>
+
+<main>
+  
+
+  <h2 class="secao"><span class="ico"><svg><use href="#i-book"/></svg></span> Entendendo o PIX</h2>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-money"/></svg></span></span>
+    <div>
+      <h3>O que é o PIX?</h3>
+      <button class="btn-ouvir" aria-label="Ouvir explicação sobre o que é o PIX" onclick="ouvir(this, 'O que é o PIX? É um jeito de mandar e receber dinheiro na hora, pelo celular. O dinheiro cai na mesma hora e não paga taxa. É como entregar dinheiro na mão de alguém, só que pelo celular.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <p>É um jeito de <strong>mandar e receber dinheiro na hora</strong>, pelo celular. O dinheiro cai <strong>na mesma hora</strong> e <strong>não paga taxa</strong>.</p>
+      <div class="aviso"><span class="ico"><svg><use href="#i-check"/></svg></span><span>É como entregar dinheiro na mão de alguém — só que pelo celular.</span></div>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-key"/></svg></span></span>
+    <div>
+      <h3>O que é a "chave PIX"?</h3>
+      <button class="btn-ouvir" aria-label="Ouvir explicação sobre a chave PIX" onclick="ouvir(this, 'O que é a chave PIX? É o endereço da pessoa para receber. Pode ser o celular, o CPF, o e-mail, ou um QR Code, que é aquele quadradinho. Você digita a chave, e o celular mostra o nome de quem vai receber, para você conferir.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <p>É o "endereço" da pessoa pra receber. Pode ser <strong>celular, CPF, e-mail</strong> ou <strong>QR Code</strong> (o quadradinho).</p>
+      <div class="aviso"><span class="ico"><svg><use href="#i-check"/></svg></span><span>Você digita a chave, e o celular mostra o <strong>nome de quem vai receber</strong> pra você conferir.</span></div>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-eye"/></svg></span></span>
+    <div>
+      <h3>A parte MAIS importante: CONFERIR o nome</h3>
+      <button class="btn-ouvir" aria-label="Ouvir explicação sobre conferir o nome" onclick="ouvir(this, 'A parte mais importante: conferir o nome. Depois de digitar a chave, aparece o nome de quem vai receber. Veja se é a pessoa certa antes de mandar! Nome certo mais valor certo é igual a pode confirmar. Não tem pressa!')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <p>Depois de digitar a chave, <strong>aparece o nome de quem vai receber</strong>. Veja se é a pessoa certa <strong>antes</strong> de mandar!</p>
+      <div class="aviso"><span class="ico"><svg><use href="#i-check"/></svg></span><span>Nome certo + valor certo = pode confirmar. Não tem pressa!</span></div>
+    </div>
+  </div>
+
+  <div class="alerta-vermelho">
+    <span class="ico"><svg><use href="#i-warning"/></svg></span>
+    <span><strong>CUIDADO COM GOLPE!</strong> Ninguém de verdade pede PIX dizendo que você "ganhou um prêmio". Na dúvida, <strong>ligue para um filho ou neto antes de mandar.</strong></span>
+    <button class="btn-ouvir" aria-label="Ouvir aviso sobre golpe" onclick="ouvir(this, 'Cuidado com golpe! Ninguém de verdade pede PIX dizendo que você ganhou um prêmio. Na dúvida, ligue para um filho ou neto antes de mandar.')">
+      <span class="ico"><svg><use href="#i-sound"/></svg></span>
+    </button>
+  </div>
+
+  <div class="alerta">
+    <span class="ico"><svg><use href="#i-lock"/></svg></span>
+    <span><strong>Aqui é só treino!</strong> Nada nesta tela mexe no seu dinheiro de verdade. 💚</span>
+    <button class="btn-ouvir" aria-label="Ouvir aviso de que é só treino" onclick="ouvir(this, 'Aqui é só treino! Nada nesta tela mexe no seu dinheiro de verdade.')">
+      <span class="ico"><svg><use href="#i-sound"/></svg></span>
+    </button>
+  </div>
+
+  <h2 class="secao"><span class="ico"><svg><use href="#i-touch"/></svg></span> Pratique fazendo de verdade!</h2>
+  <p class="progresso" id="progresso">Passo 1 de 5</p>
+
+  <div id="quiz">
+    <div class="celular">
+      <div class="tela">
+        <div class="topo">
+          <div class="logo">🏦</div>
+          <div>
+            <div class="nome-banco">Meu Banco</div>
+            <div class="sub">simulação de treino</div>
+          </div>
+        </div>
+        <div class="conteudo" id="conteudo"></div>
+        <div class="instrucao" id="instrucao"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="btn-proximo" id="btnProximo" onclick="proxima()">Próximo ➤</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <p style="font-size:22px;font-weight:bold;">🎉 Você terminou!</p>
+    <p class="nota" id="nota">0 / 5</p>
+    <div class="barra-fundo"><div class="barra-cheia" id="barra"></div></div>
+    <p id="mensagemFinal"></p>
+  </div>
+</main>
+
+<footer>
+  <a href="../modulos.html" class="btn-inicio"><span class="ico"><svg><use href="#i-home"/></svg></span> Voltar ao início</a>
+</footer>
+
+<script>
+  /* ===== LEITURA EM VOZ ALTA ===== */
+  let vozBR = null;
+  function carregarVoz(){
+    const vozes = speechSynthesis.getVoices();
+    vozBR = vozes.find(v=>v.lang==='pt-BR') || vozes.find(v=>v.lang.startsWith('pt')) || null;
+  }
+  carregarVoz();
+  if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=carregarVoz;
+
+  function limparEmojis(t){ return t.replace(/[^\wÀ-úçÇ\s,!?.:"$]/g,''); }
+
+  function ouvir(botao, texto){
+    if(!('speechSynthesis' in window)){ alert('Seu aparelho não tem leitura de voz.'); return; }
+    if(speechSynthesis.speaking){
+      speechSynthesis.cancel();
+      document.querySelectorAll('.btn-ouvir.falando').forEach(b=>b.classList.remove('falando'));
+      return;
+    }
+    const fala = new SpeechSynthesisUtterance(limparEmojis(texto));
+    fala.lang='pt-BR'; if(vozBR) fala.voice=vozBR;
+    fala.rate=0.85; fala.pitch=1; fala.volume=1;
+    if(botao){ botao.classList.add('falando'); }
+    fala.onend=()=>{ if(botao){ botao.classList.remove('falando'); } };
+    fala.onerror=()=>{ if(botao){ botao.classList.remove('falando'); } };
+    speechSynthesis.speak(fala);
+  }
+
+  /* ===== SIMULAÇÃO DO CELULAR ===== */
+  const passos = [
+    {tipo:'chave', titulo:'Digite o celular de quem recebe',
+     explica:'Isso! Você digitou a chave (o celular). Agora o banco vai achar quem é o dono. 👍'},
+    {tipo:'conferenome', titulo:'Confira o NOME',
+     explica:'Muito bem! Você conferiu que o nome é mesmo do seu neto ANTES de continuar. Assim ninguém te engana! 💚'},
+    {tipo:'valor', titulo:'Digite o valor',
+     explica:'Perfeito! Você digitou o valor do PIX. 👍'},
+    {tipo:'golpe', titulo:'Cuidado com golpe!',
+     explica:'MUITO BEM! Você não caiu no golpe. Ninguém dá prêmio pedindo PIX. Você se protegeu! 🛡️'},
+    {tipo:'qr', titulo:'Pagar com QR Code',
+     explica:'Excelente! O QR Code já traz o valor e o nome prontos. Só conferir e confirmar! 🔲'}
+  ];
+
+  let atual=0, acertos=0, jaPontuou=false, digitado='';
+  const elProg=document.getElementById('progresso');
+  const elConteudo=document.getElementById('conteudo');
+  const elInstr=document.getElementById('instrucao');
+  const elFeed=document.getElementById('feedback');
+  const elProx=document.getElementById('btnProximo');
+
+  carregar();
+
+  function carregar(){
+    const p=passos[atual]; jaPontuou=false; digitado='';
+    elProg.textContent='Passo '+(atual+1)+' de '+passos.length;
+    elFeed.style.display='none'; elProx.style.display='none';
+    if(p.tipo==='chave'){ elInstr.textContent='👆 Digite o celular 9999 e toque no ✓'; montarChave(); }
+    else if(p.tipo==='conferenome'){ elInstr.textContent='👀 É mesmo o seu neto? Toque em "Sim, é ele"'; montarConfereNome(); }
+    else if(p.tipo==='valor'){ elInstr.textContent='👆 Digite 50 e toque no ✓'; montarValor(); }
+    else if(p.tipo==='golpe'){ elInstr.textContent='🚨 O que você faz com esta mensagem?'; montarGolpe(); }
+    else if(p.tipo==='qr'){ elInstr.textContent='📷 Toque no botão "Escanear" para ler o quadradinho'; montarQr(); }
+  }
+
+  function montarChave(){
+    elConteudo.innerHTML=
+      '<div class="cenario-txt">Seu neto te passou o celular dele: <b>9999</b>. Digite pra mandar o PIX.</div>'+
+      '<div class="rotulo-campo">Celular de quem recebe:</div>'+
+      '<div class="visor chave vazio" id="visor">digite aqui</div>'+
+      teclado('confirmaChave');
+    atualizaVisorChave();
+  }
+  function atualizaVisorChave(){
+    const v=document.getElementById('visor');
+    if(!digitado){ v.className='visor chave vazio'; v.textContent='digite aqui'; }
+    else { v.className='visor chave'; v.textContent=digitado; }
+  }
+  function confirmaChave(){
+    if(digitado==='9999') vencer();
+    else mostrarFeed(false,'❌ O celular do seu neto é 9999. Apague (⌫) e digite de novo.',false);
+  }
+
+  function montarConfereNome(){
+    elConteudo.innerHTML=
+      '<div class="cenario-txt">O banco achou o dono do celular <b>9999</b>. Veja o nome:</div>'+
+      '<div class="conferir">'+
+        '<div class="linha-conf"><span class="lab">Quem vai receber</span>'+
+          '<span class="val destaque-nome">Pedro (seu neto)</span></div>'+
+        '<div class="linha-conf"><span class="lab">Celular</span><span class="val">9999</span></div>'+
+        '<div class="botoes-conf">'+
+          '<button class="bt-cancela" onclick="confNome(false)">❌ Não é ele</button>'+
+          '<button class="bt-confirma" onclick="confNome(true)">✅ Sim, é ele</button>'+
+        '</div>'+
+      '</div>';
+  }
+  function confNome(ok){
+    if(ok) vencer();
+    else mostrarFeed(false,'O nome que apareceu é "Pedro (seu neto)" — é a pessoa certa! Toque em "Sim, é ele". 👆',false);
+  }
+
+  function montarValor(){
+    elConteudo.innerHTML=
+      '<div class="cenario-txt">Agora digite quanto vai mandar pro <b>Pedro</b>: <b>R$ 50</b>.</div>'+
+      '<div class="rotulo-campo">Valor do PIX:</div>'+
+      '<div class="visor vazio" id="visor"><span class="moeda">R$</span>0</div>'+
+      teclado('confirmaValor');
+    atualizaVisorValor();
+  }
+  function atualizaVisorValor(){
+    const v=document.getElementById('visor');
+    if(!digitado){ v.className='visor vazio'; v.innerHTML='<span class="moeda">R$</span>0'; }
+    else { v.className='visor'; v.innerHTML='<span class="moeda">R$</span>'+parseInt(digitado); }
+  }
+  function confirmaValor(){
+    if(parseInt(digitado)===50) vencer();
+    else mostrarFeed(false,'❌ O valor é R$ 50. Apague (⌫) e digite 50.',false);
+  }
+
+  function teclado(fnConfirmar){
+    let html='<div class="teclado">';
+    ['1','2','3','4','5','6','7','8','9'].forEach(n=>{html+='<button onclick="digita(\''+n+'\')">'+n+'</button>';});
+    html+='<button class="apagar" onclick="apaga()">⌫</button>';
+    html+='<button onclick="digita(\'0\')">0</button>';
+    html+='<button onclick="'+fnConfirmar+'()" style="background:#2e7d32;color:#fff;">✓</button>';
+    html+='</div>';
+    return html;
+  }
+  function digita(n){
+    if(digitado.length<6){ digitado+=n;
+      if(passos[atual].tipo==='chave') atualizaVisorChave(); else atualizaVisorValor(); }
+  }
+  function apaga(){
+    digitado=digitado.slice(0,-1);
+    if(passos[atual].tipo==='chave') atualizaVisorChave(); else atualizaVisorValor();
+  }
+
+  function montarGolpe(){
+    elConteudo.innerHTML=
+      '<div class="cenario-txt">Chegou esta mensagem de um número <b>desconhecido</b>:</div>'+
+      '<div class="msg-golpe">'+
+        '<div class="de">📱 Número desconhecido</div>'+
+        '<div class="texto">🎉 PARABÉNS! Você GANHOU R$ 5.000! '+
+        'Para liberar, faça um PIX de R$ 50 agora neste número! 💰</div>'+
+        '<div class="escolhas">'+
+          '<button id="op-recusar" onclick="golpe(true)">🛡️ NÃO mandar PIX (é golpe!)</button>'+
+          '<button onclick="golpe(false)">💸 Mandar o PIX de R$ 50</button>'+
+        '</div>'+
+      '</div>';
+  }
+  function golpe(recusou){
+    if(recusou){ document.getElementById('op-recusar').classList.add('certo-ok'); vencer(); }
+    else mostrarFeed(false,'🚨 CUIDADO! Isso é GOLPE! Ninguém pede PIX pra "liberar prêmio". Tente de novo e RECUSE.',false);
+  }
+
+  function montarQr(){
+    elConteudo.innerHTML=
+      '<div class="cenario-txt">Na padaria você paga lendo o <b>quadradinho</b> (QR Code).</div>'+
+      '<div class="qr-box">'+
+        '<div class="camera" id="cam">'+
+          '<div class="moldura"></div>'+
+          '<div class="linha-scan"></div>'+
+          '<div class="qr-img"></div>'+
+        '</div>'+
+        '<button class="btn-escanear" id="btEsc" onclick="escanear()">📷 Escanear</button>'+
+      '</div>';
+  }
+  function escanear(){
+    if(jaPontuou) return;
+    const cam=document.getElementById('cam');
+    document.getElementById('btEsc').disabled=true;
+    document.getElementById('btEsc').textContent='Lendo...';
+    cam.classList.add('lendo');
+    setTimeout(()=>{
+      cam.classList.remove('lendo');
+      elConteudo.innerHTML=
+        '<div class="cenario-txt">✅ QR Code lido! Confira os dados:</div>'+
+        '<div class="conferir">'+
+          '<div class="linha-conf"><span class="lab">Quem recebe</span>'+
+            '<span class="val destaque-nome">Padaria Pão Quente</span></div>'+
+          '<div class="linha-conf"><span class="lab">Valor</span>'+
+            '<span class="val destaque-valor">R$ 12,00</span></div>'+
+        '</div>';
+      vencer();
+    },1700);
+  }
+
+  function vencer(){
+    if(jaPontuou) return; jaPontuou=true; acertos++;
+    mostrarFeed(true,'✅ '+passos[atual].explica,true);
+  }
+  function mostrarFeed(acertou,msg,mostraProx){
+    elFeed.className='feedback '+(acertou?'acertou':'errou');
+    elFeed.textContent=msg; elFeed.style.display='block';
+    ouvir(null, msg);
+    if(mostraProx){
+      elProx.style.display='block';
+      elProx.textContent=(atual+1<passos.length)?'Próximo ➤':'Ver resultado 🎉';
+    }
+  }
+  function proxima(){ speechSynthesis.cancel(); atual++; if(atual<passos.length) carregar(); else finalizar(); }
+  function finalizar(){
+    document.getElementById('quiz').style.display='none';
+    elProg.style.display='none';
+    const res=document.getElementById('resultado'); res.style.display='block';
+    document.getElementById('nota').textContent=acertos+' / '+passos.length;
+    const pct=(acertos/passos.length)*100;
+    setTimeout(()=>{document.getElementById('barra').style.width=pct+'%';},200);
+    let msg='';
+    if(acertos===5) msg='Perfeito! Você já sabe mandar PIX com segurança! 💚💸';
+    else if(acertos>=3) msg='Muito bem! Está quase lá. Pratique de novo com calma! 😊';
+    else msg='Sem pressa! O PIX é fácil quando a gente treina. Tente outra vez! 💪';
+    document.getElementById('mensagemFinal').textContent=msg;
+    ouvir(null, 'Você terminou! Sua nota foi ' + acertos + ' de ' + passos.length + '. ' + msg);
+    registrarDesempenho('pix', acertos, passos.length);
+  }
+
+  function registrarDesempenho(chave, acertos, total){
+    const dados = JSON.parse(localStorage.getItem('conectaIdoso_desempenho') || '{}');
+    dados[chave] = {
+      acertos: acertos,
+      total: total,
+      data: new Date().toLocaleDateString('pt-BR')
+    };
+    localStorage.setItem('conectaIdoso_desempenho', JSON.stringify(dados));
+  }
+</script>
+
+</body>
+</html>

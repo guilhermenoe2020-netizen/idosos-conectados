@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  
+  <!-- ===== FAVICON (logo na aba) ===== -->
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/favicon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../icons/favicon.png">
+<link rel="shortcut icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/favicon.png">
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Área da Família - Painel de Acompanhamento</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Arial,sans-serif;font-size:17px;line-height:1.5;color:#222;background:#eef5ef;overflow-x:hidden;}
+
+  .emoji{font-family:'Noto Color Emoji', sans-serif;font-weight:normal;}
+
+  /* ===== HEADER ===== */
+  header{background:#1565c0;color:#fff;padding:16px;display:flex;align-items:center;gap:14px;}
+  header h1{font-size:22px;display:flex;align-items:center;gap:8px;}
+  header h1 svg{width:26px;height:26px;}
+  .btn-voltar{background:#fff;color:#1565c0;text-decoration:none;font-weight:bold;
+              padding:10px 18px;border-radius:25px;flex-shrink:0;
+              display:inline-flex;align-items:center;gap:8px;}
+  .btn-voltar svg{width:20px;height:20px;display:block;}
+
+  main{
+  max-width:680px;
+  margin:0 auto;
+  padding:24px 16px;
+  width:100%;
+}
+
+/* impede o texto de "vazar" em telas estreitas */
+.area-topo .titulo{
+  word-break:break-word;
+  overflow-wrap:anywhere;
+}
+  /* ===== INTRO ===== */
+  .intro{background:#e3f2fd;border-left:6px solid #1565c0;padding:20px 22px;border-radius:12px;
+         margin-bottom:28px;font-size:18px;box-shadow:0 3px 8px rgba(0,0,0,0.06);}
+  .intro b{color:#1565c0;}
+  .intro .destaque-frase{display:block;margin-top:14px;padding-top:14px;
+         border-top:1px dashed #90caf9;font-size:17px;}
+
+  /* ===== SEÇÕES ===== */
+  h2.secao{font-size:21px;color:#1565c0;margin:30px 0 16px;
+           border-bottom:3px solid #64b5f6;padding-bottom:6px;
+           display:flex;align-items:center;gap:8px;}
+  .ico-svg{width:24px;height:24px;flex-shrink:0;}
+
+  /* ===== RESUMO ===== */
+  .resumo{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
+  .card-num{flex:1;min-width:140px;background:#fff;border-radius:14px;padding:18px;
+            text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);}
+  .card-num .valor{font-size:34px;font-weight:bold;color:#1565c0;}
+  .card-num .legenda{font-size:15px;color:#666;margin-top:4px;}
+
+  /* ===== ÁREAS ===== */
+  .area-item{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px;
+             box-shadow:0 3px 8px rgba(0,0,0,0.08);}
+  .area-topo{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .area-topo .ico{font-size:28px;line-height:1;}
+  .area-topo .titulo{font-size:18px;font-weight:bold;flex:1;}
+  .area-topo .perc{font-size:18px;font-weight:bold;}
+  .barra-fundo{background:#e0e0e0;border-radius:20px;height:22px;overflow:hidden;}
+  .barra-cheia{height:100%;border-radius:20px;transition:width 0.8s;}
+  .b-bom{background:#43a047;} .b-medio{background:#fbc02d;} .b-baixo{background:#e53935;}
+  .area-status{font-size:14px;margin-top:8px;}
+  .tag{display:inline-block;padding:3px 10px;border-radius:12px;font-size:13px;font-weight:bold;}
+  .t-bom{background:#e8f5e9;color:#2e7d32;} .t-medio{background:#fff8e1;color:#f57f17;}
+  .t-baixo{background:#ffebee;color:#c62828;} .t-nada{background:#eceff1;color:#607d8b;}
+
+  /* ===== DESTAQUE ===== */
+  .destaque{border-radius:14px;padding:18px;margin-bottom:10px;
+            display:flex;gap:14px;align-items:center;}
+  .destaque .ico{font-size:42px;line-height:1;flex-shrink:0;}
+  .destaque h3{font-size:18px;}
+  .destaque p{font-size:16px;}
+  .d-dif{background:#fff3e0;border:2px solid #ffb74d;}
+  .d-dif h3{color:#ef6c00;}
+  .d-bom{background:#e8f5e9;border:2px solid #81c784;}
+  .d-bom h3{color:#2e7d32;}
+
+  /* ===== DICAS ===== */
+  .dica{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px;
+        box-shadow:0 3px 8px rgba(0,0,0,0.08);display:flex;gap:14px;align-items:flex-start;}
+  .dica .num{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:#1565c0;
+             color:#fff;font-size:20px;font-weight:bold;display:flex;align-items:center;justify-content:center;}
+  .dica h3{font-size:18px;color:#1565c0;margin-bottom:4px;}
+  .dica p{font-size:16px;}
+
+  /* ===== FOOTER ===== */
+  footer{text-align:center;padding:30px 16px;}
+  .btn-inicio{display:inline-flex;align-items:center;gap:8px;background:#1565c0;color:#fff;
+              text-decoration:none;font-size:19px;font-weight:bold;padding:16px 28px;border-radius:30px;}
+  .btn-inicio svg{width:22px;height:22px;}
+  .btn-reset{background:none;border:none;color:#999;font-size:14px;
+             text-decoration:underline;cursor:pointer;margin-top:18px;}
+
+  /* ===== ACESSIBILIDADE: REDUZIR MOVIMENTO ===== */
+  @media (prefers-reduced-motion: reduce){
+    .dica:hover{animation:none;transform:none;}
+  }
+
+</style>
+</head>
+<body>
+  
+
+<!-- ===== BIBLIOTECA DE ÍCONES SVG ===== -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M11 18l-6-6 6-6"/></symbol>
+  <symbol id="i-family" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M7 15l3-3 3 2 5-6"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></symbol>
+</svg>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <a href="../index.html" class="btn-voltar">
+    <svg><use href="#i-back"/></svg> Voltar
+  </a>
+  <h1><svg><use href="#i-family"/></svg> Área da Família</h1>
+</header>
+
+<main>
+  <!-- ===== INTRODUÇÃO MELHORADA ===== -->
+  <div class="intro">
+    Este espaço foi pensado para <b>você, familiar ou cuidador</b>. <span class="emoji">❤️</span>
+    Aqui você acompanha o <b>progresso do seu idoso</b>, identifica
+    <b>onde ele encontra mais dificuldade</b> e recebe orientações práticas para apoiá-lo no dia a dia.
+    <span class="destaque-frase">
+      <b>Seu acompanhamento faz toda a diferença:</b> com a sua presença, o idoso ganha confiança e
+      <b>não desiste de aprender</b>.
+    </span>
+  </div>
+
+  <!-- ===== RESUMO ===== -->
+  <h2 class="secao"><svg class="ico-svg"><use href="#i-chart"/></svg> Resumo geral</h2>
+  <div class="resumo">
+    <div class="card-num"><div class="valor" id="rGeral">0%</div><div class="legenda">Progresso geral</div></div>
+    <div class="card-num"><div class="valor" id="rConcluidas">0</div><div class="legenda">Áreas iniciadas</div></div>
+    <div class="card-num"><div class="valor" id="rAcertos">0</div><div class="legenda">Acertos no total</div></div>
+  </div>
+
+  <!-- ===== DESEMPENHO ===== -->
+  <h2 class="secao"><svg class="ico-svg"><use href="#i-book"/></svg> Desempenho por área</h2>
+  <div id="listaAreas"></div>
+
+  <!-- ===== COMO AJUDAR ===== -->
+  <h2 class="secao"><svg class="ico-svg"><use href="#i-target"/></svg> Como ajudá-lo agora</h2>
+  <div class="destaque d-dif" id="destaque">
+    <span class="ico emoji" id="difIcone">🤗</span>
+    <div>
+      <h3 id="difTitulo">Ainda não há dados</h3>
+      <p id="difTexto">Assim que o idoso começar a usar o aplicativo, mostraremos aqui a área em que ele mais precisa de atenção.</p>
+    </div>
+  </div>
+
+  <!-- ===== DICAS ===== -->
+  <h2 class="secao"><svg class="ico-svg"><use href="#i-bulb"/></svg> 4 dicas para ajudar o idoso</h2>
+
+  <div class="dica">
+    <span class="num">1</span>
+    <div>
+      <h3>Use o aplicativo junto com ele</h3>
+      <p>Sente-se ao lado, sem pressa, e deixe que <b>ele mesmo</b> toque na tela. Sozinho, ele esquece — com a sua companhia, ele aprende e ganha confiança.</p>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="num">2</span>
+    <div>
+      <h3>Tenha paciência e elogie cada acerto</h3>
+      <p>Evite corrigir com pressa ou fazer por ele. Reconheça cada conquista: <i>"Muito bem, você conseguiu!"</i>. O medo de errar é o que mais trava o aprendizado do idoso.</p>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="num">3</span>
+    <div>
+      <h3>Foque na área de maior dificuldade</h3>
+      <p>Observe acima onde ele mais erra e <b>pratique justamente essa parte</b>, usando exemplos do cotidiano (como o PIX que ele faz na padaria).</p>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="num">4</span>
+    <div>
+      <h3>Crie uma rotina e esteja presente</h3>
+      <p>Combinem um dia fixo na semana para praticar juntos. E deixe o seu número salvo no celular dele, para que ele possa <b>ligar sempre que tiver dúvida</b>.</p>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <button class="btn-reset" onclick="zerar()">Apagar dados de progresso</button>
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <a href="../index.html" class="btn-inicio"><svg><use href="#i-home"/></svg> Voltar ao início</a>
+</footer>
+
+<script>
+"use strict";
+
+const STORAGE_KEY = "conectaIdoso_desempenho";
+
+const AREAS = [
+  { chave: "conhecendo-celular", nome: "Conhecendo o Celular", ico: "📱" },
+  { chave: "whatsapp",           nome: "WhatsApp",             ico: "💬" },
+  { chave: "pix",                nome: "Fazer um PIX",         ico: "💵" },
+  { chave: "seguranca",          nome: "Segurança",            ico: "🔒" },
+  { chave: "ia-fakenews",        nome: "IA e Fake News",       ico: "📰" },
+  { chave: "golpe",              nome: "É Golpe?",             ico: "🚨" }
+];
+
+const TOTAL_AREAS = AREAS.length;
+const FAIXA_BOM   = 70;
+const FAIXA_MEDIO = 40;
+
+/* ===== DADOS ===== */
+function lerDesempenho() {
+  try {
+    const dados = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    return (dados && typeof dados === "object") ? dados : {};
+  } catch (erro) {
+    console.warn("Erro ao ler:", erro);
+    return {};
+  }
+}
+
+function registrarDesempenho(chave, acertos, total) {
+  try {
+    const dados = lerDesempenho();
+    dados[chave] = {
+      acertos: Number(acertos) || 0,
+      total:   Number(total)   || 0,
+      data:    new Date().toLocaleDateString("pt-BR")
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+  } catch (erro) {
+    console.warn("Erro ao salvar:", erro);
+  }
+}
+window.registrarDesempenho = registrarDesempenho;
+
+/* ===== LÓGICA ===== */
+function classificar(perc) {
+  if (perc >= FAIXA_BOM)   return { tag: "t-bom",   barra: "b-bom",   texto: "Indo bem" };
+  if (perc >= FAIXA_MEDIO) return { tag: "t-medio", barra: "b-medio", texto: "Precisa praticar" };
+  return                         { tag: "t-baixo", barra: "b-baixo", texto: "Dificuldade" };
+}
+
+function calcularPainel(dados) {
+  const areas = [];
+  let somaPerc = 0, iniciadas = 0, totalAcertos = 0;
+  let pior = null;
+
+  AREAS.forEach(area => {
+    const d = dados[area.chave];
+    const iniciou = d && Number(d.total) > 0;
+    const perc = iniciou ? Math.round((d.acertos / d.total) * 100) : 0;
+
+    if (iniciou) {
+      iniciadas++;
+      somaPerc += perc;
+      totalAcertos += Number(d.acertos) || 0;
+
+      if (perc < FAIXA_BOM) {
+        if (pior === null || perc < pior.perc) {
+          pior = { area, perc };
+        }
+      }
+    }
+
+    areas.push({
+      ...area,
+      iniciou,
+      perc,
+      detalhe: iniciou
+        ? "Acertou " + d.acertos + " de " + d.total + " — último uso: " + d.data
+        : "Ainda não praticou esta área.",
+      classe: iniciou ? classificar(perc) : { tag: "t-nada", barra: "b-baixo", texto: "Não iniciado" }
+    });
+  });
+
+  const progressoGeral = iniciadas ? Math.round(somaPerc / iniciadas) : 0;
+  const indoBem = iniciadas > 0 && pior === null;
+  const todasIniciadas = iniciadas === TOTAL_AREAS;
+
+  return { areas, progressoGeral, iniciadas, totalAcertos, pior, indoBem, todasIniciadas };
+}
+
+/* ===== RENDER ===== */
+function renderArea(a) {
+  return (
+    '<div class="area-item">' +
+      '<div class="area-topo">' +
+        '<span class="ico emoji">' + a.ico + '</span>' +
+        '<span class="titulo">' + a.nome + '</span>' +
+        '<span class="perc">' + (a.iniciou ? a.perc + "%" : "—") + '</span>' +
+      '</div>' +
+      '<div class="barra-fundo">' +
+        '<div class="barra-cheia ' + a.classe.barra + '" style="width:' + (a.iniciou ? a.perc : 0) + '%"></div>' +
+      '</div>' +
+      '<div class="area-status">' +
+        '<span class="tag ' + a.classe.tag + '">' + a.classe.texto + '</span> &nbsp; ' + a.detalhe +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function renderDestaque(estado) {
+  const box    = document.getElementById("destaque");
+  const icone  = document.getElementById("difIcone");
+  const titulo = document.getElementById("difTitulo");
+  const texto  = document.getElementById("difTexto");
+
+  if (estado.iniciadas === 0) {
+    box.className = "destaque d-dif";
+    icone.textContent = "🤗";
+    titulo.textContent = "Ainda não há dados";
+    texto.innerHTML = "Assim que o idoso começar a usar o aplicativo, mostraremos aqui a área em que ele mais precisa de atenção. ❤️";
+    return;
+  }
+
+  if (estado.indoBem) {
+    box.className = "destaque d-bom";
+    icone.textContent = "🏆";
+
+    if (estado.todasIniciadas) {
+      titulo.textContent = "Parabéns! Ele está indo muito bem! 🎉";
+      texto.innerHTML =
+        "O idoso está com <b>ótimo desempenho em todas as áreas</b> " +
+        "(progresso geral de <b>" + estado.progressoGeral + "%</b>). " +
+        "Continue praticando junto de vez em quando para manter a confiança dele. ❤️";
+    } else {
+      const faltam = TOTAL_AREAS - estado.iniciadas;
+      const txtFaltam = faltam === 1 ? "falta <b>1 área</b>" : "faltam <b>" + faltam + " áreas</b>";
+      titulo.textContent = "Ele está indo bem! 👏";
+      texto.innerHTML =
+        "Nas <b>" + estado.iniciadas + " de " + TOTAL_AREAS + " áreas</b> que ele já praticou, está indo muito bem " +
+        "(acerto de <b>" + estado.progressoGeral + "%</b>). " +
+        "Ainda " + txtFaltam + " para experimentar — incentive-o a explorar as demais com você. ❤️";
+    }
+    return;
+  }
+
+  const p = estado.pior;
+  box.className = "destaque d-dif";
+  icone.textContent = p.area.ico;
+  titulo.textContent = p.area.nome;
+  texto.innerHTML =
+    "É aqui que ele tem <b>mais dificuldade</b> (" + p.perc + "% de acerto). " +
+    "Reserve um tempo para treinar <b>" + p.area.nome + "</b> com ele, usando exemplos do dia a dia. ❤️";
+}
+
+function renderPainel() {
+  const dados  = lerDesempenho();
+  const estado = calcularPainel(dados);
+
+  document.getElementById("listaAreas").innerHTML = estado.areas.map(renderArea).join("");
+  document.getElementById("rGeral").textContent      = estado.progressoGeral + "%";
+  document.getElementById("rConcluidas").textContent = estado.iniciadas;
+  document.getElementById("rAcertos").textContent    = estado.totalAcertos;
+
+  renderDestaque(estado);
+}
+
+/* ===== AÇÕES ===== */
+function zerar() {
+  if (confirm("Tem certeza que deseja apagar todo o progresso do idoso?")) {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) { console.warn(e); }
+    renderPainel();
+  }
+}
+window.zerar = zerar;
+
+document.addEventListener("DOMContentLoaded", renderPainel);
+</script>
+
+</body>
+</html>

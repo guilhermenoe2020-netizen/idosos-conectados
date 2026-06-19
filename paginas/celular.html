@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  
+  <!-- ===== FAVICON (logo na aba) ===== -->
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/favicon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../icons/favicon.png">
+<link rel="shortcut icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/favicon.png">
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conhecendo o Celular - Idosos Conectados</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Arial,sans-serif;font-size:18px;line-height:1.6;
+       color:#222;background:#eef2f5;}
+
+  .ico{display:inline-flex;vertical-align:middle;width:1em;height:1em;}
+  .ico svg{width:100%;height:100%;display:block;}
+
+  header{background:#1565c0;color:#fff;padding:16px;
+          display:flex;align-items:center;gap:14px;}
+  header h1{font-size:24px;display:flex;align-items:center;gap:10px;}
+  .btn-voltar{background:#fff;color:#1565c0;text-decoration:none;
+              font-weight:bold;padding:10px 18px;border-radius:25px;flex-shrink:0;
+              display:inline-flex;align-items:center;gap:6px;}
+
+  main{max-width:600px;margin:0 auto;padding:24px 16px;}
+  .intro{font-size:20px;margin-bottom:20px;text-align:center;}
+
+  h2.secao{font-size:23px;color:#1565c0;margin:28px 0 14px;
+           border-bottom:3px solid #42a5f5;padding-bottom:6px;
+           display:flex;align-items:center;gap:10px;}
+  .dica{background:#fff;border-radius:14px;padding:18px;margin-bottom:16px;
+        box-shadow:0 3px 8px rgba(0,0,0,0.1);display:flex;gap:14px;align-items:flex-start;}
+  .dica .icone{flex-shrink:0;width:48px;height:48px;border-radius:12px;
+        background:#e3f2fd;color:#1565c0;display:flex;align-items:center;justify-content:center;}
+  .dica .icone .ico{width:28px;height:28px;}
+  .dica h3{font-size:19px;color:#1565c0;margin-bottom:4px;}
+
+  .btn-ouvir{background:#e3f2fd;color:#1565c0;border:2px solid #42a5f5;
+    border-radius:50%;width:50px;height:50px;padding:0;
+    cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+    transition:transform .12s;}
+    .btn-ouvir-alerta{background:#fde6e3;color:#1565c0;border:2px solid #42a5f5;
+    border-radius:50%;width:50px;height:50px;padding:0;
+    cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+    transition:transform .12s;}
+  .btn-ouvir:active{transform:scale(.96);}
+  .btn-ouvir.falando{background:#1565c0;color:#fff;}
+  .btn-ouvir .ico{width:24px;height:24px;}
+
+  .dica > div{flex:1;position:relative;padding-right:60px;}
+  .dica .btn-ouvir{position:absolute;top:0;right:0;}
+  .dica h3{padding-right:0;}
+
+  .alerta{background:#fff3e0;border-left:6px solid #ef6c00;
+          padding:16px;border-radius:10px;margin:18px 0;font-size:18px;
+          position:relative;padding-right:76px;}   /* espaço p/ o botão no canto */
+  .alerta .btn-ouvir{position:absolute;top:16px;right:16px;}
+  .alerta .alerta-titulo{display:flex;align-items:center;gap:8px;
+          font-size:19px;color:#5d4037;margin-bottom:6px;}
+  .alerta .alerta-titulo .ico{width:24px;height:24px;color:#ef6c00;flex-shrink:0;}
+  .alerta .alerta-texto{line-height:1.5;}
+
+
+  .progresso{text-align:center;font-weight:bold;color:#1565c0;
+             font-size:18px;margin-bottom:16px;}
+
+  .celular{max-width:340px;margin:0 auto;background:#111;
+           border-radius:34px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+  .tela{position:relative;background:#e3f2fd;border-radius:24px;overflow:hidden;min-height:520px;
+        display:flex;flex-direction:column;}
+
+  .topo{background:#1565c0;color:#fff;padding:12px 14px;
+        display:flex;align-items:center;gap:10px;}
+  .topo .foto{width:42px;height:42px;border-radius:50%;
+              background:#42a5f5;display:flex;align-items:center;
+              justify-content:center;font-size:22px;flex-shrink:0;}
+  .topo .nome{font-weight:bold;font-size:17px;}
+  .topo .status{font-size:13px;opacity:0.85;}
+
+  .conteudo{flex:1;padding:16px;display:flex;flex-direction:column;
+            gap:12px;align-items:center;justify-content:center;text-align:center;}
+  .cenario-txt{background:#fff;border-radius:12px;padding:14px;
+               font-size:16px;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+
+  .instrucao{background:#fffde7;border-top:2px solid #f0e6a0;padding:14px;
+    font-size:16px;font-weight:bold;color:#5d4037;text-align:center;}
+
+  .feedback{padding:14px;font-size:16px;font-weight:bold;display:none;text-align:center;}
+  .acertou{background:#e8f5e9;color:#2e7d32;}
+  .errou{background:#ffebee;color:#c62828;}
+
+  .btn-proximo{display:none;width:calc(100% - 24px);margin:0 12px 14px;
+               background:#1565c0;color:#fff;font-size:18px;font-weight:bold;
+               padding:14px;border:none;border-radius:12px;cursor:pointer;}
+
+  .resultado{display:none;background:#fff;border-radius:16px;
+             padding:30px 20px;text-align:center;margin-top:20px;
+             box-shadow:0 3px 10px rgba(0,0,0,0.15);}
+  .nota{font-size:44px;font-weight:bold;color:#42a5f5;margin:10px 0;}
+  .barra-fundo{background:#e0e0e0;border-radius:20px;height:28px;
+               overflow:hidden;margin:18px 0;}
+  .barra-cheia{background:#42a5f5;height:100%;width:0;
+               transition:width 0.8s;border-radius:20px;}
+
+  footer{text-align:center;padding:30px 16px;}
+  .btn-inicio{display:inline-flex;align-items:center;gap:8px;background:#1565c0;color:#fff;
+              text-decoration:none;font-size:20px;font-weight:bold;
+              padding:16px 28px;border-radius:30px;}
+
+  .lista-toques{list-style:none;margin-top:8px;display:flex;
+                flex-direction:column;gap:10px;}
+  .lista-toques li{display:flex;align-items:flex-start;gap:10px;font-size:17px;}
+  .sinal{background:#e3f2fd;color:#1565c0;border-radius:10px;padding:7px;
+         display:inline-flex;flex-shrink:0;}
+  .sinal .ico{width:22px;height:22px;}
+
+  .aviso{margin-top:12px;background:#e3f2fd;border-left:5px solid #1565c0;
+         padding:10px 14px;border-radius:8px;font-size:16px;color:#0d47a1;
+         display:flex;align-items:flex-start;gap:8px;}
+  .aviso .ico{width:20px;height:20px;color:#1565c0;flex-shrink:0;margin-top:3px;}
+  .aviso > .texto-aviso{flex:1;}
+  .aviso strong{font-weight:bold;}
+
+  .grade-apps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;width:100%;}
+  .app{display:flex;flex-direction:column;align-items:center;gap:6px;
+       cursor:pointer;user-select:none;-webkit-user-select:none;}
+  .app .quadro{width:64px;height:64px;border-radius:16px;background:#fff;
+       display:flex;align-items:center;justify-content:center;font-size:34px;
+       box-shadow:0 2px 6px rgba(0,0,0,0.2);transition:transform .15s,box-shadow .15s;}
+  .app .nome-app{font-size:13px;color:#333;font-weight:bold;}
+  .app.alvo .quadro{animation:pulsa 1.4s infinite;}
+  .app .quadro.toque{transform:scale(0.85);}
+  .app .quadro.aberto{background:#66bb6a;color:#fff;transform:scale(1.05);}
+  .app .quadro.segurando{background:#ffe082;box-shadow:0 0 0 4px #ffb300;}
+  @keyframes pulsa{0%,100%{box-shadow:0 0 0 0 rgba(21,101,192,.5);}
+                   50%{box-shadow:0 0 0 10px rgba(21,101,192,0);}}
+
+  .menu-segurar{position:absolute;left:50%;bottom:90px;transform:translateX(-50%) scale(0);
+    background:#fff;border-radius:14px;padding:10px 0;width:200px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.3);transition:transform .25s;z-index:5;}
+  .menu-segurar.mostra{transform:translateX(-50%) scale(1);}
+  .menu-segurar div{padding:12px 18px;font-size:16px;color:#1565c0;font-weight:bold;}
+  .menu-segurar div+div{border-top:1px solid #eee;}
+
+  .slider-box{width:100%;display:flex;flex-direction:column;gap:10px;}
+  .slider-linha{display:flex;align-items:center;gap:12px;background:#fff;
+       padding:14px;border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+  .slider-linha .ic{font-size:30px;}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:16px;
+       border-radius:10px;background:#cfd8dc;outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+       width:38px;height:38px;border-radius:50%;background:#1565c0;cursor:pointer;
+       border:4px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);}
+  input[type=range]::-moz-range-thumb{width:38px;height:38px;border-radius:50%;
+       background:#1565c0;cursor:pointer;border:4px solid #fff;}
+  .valor-slider{font-size:22px;font-weight:bold;color:#1565c0;min-width:56px;text-align:right;}
+
+  .toggle-box{background:#fff;border-radius:14px;padding:18px;width:100%;
+       display:flex;align-items:center;justify-content:space-between;
+       box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+  .toggle-box .rotulo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:bold;}
+  .switch{width:74px;height:40px;border-radius:20px;background:#bdbdbd;
+       position:relative;cursor:pointer;transition:background .3s;flex-shrink:0;}
+  .switch .bola{width:32px;height:32px;border-radius:50%;background:#fff;
+       position:absolute;top:4px;left:4px;transition:left .3s;box-shadow:0 1px 4px rgba(0,0,0,0.3);}
+  .switch.ligado{background:#66bb6a;}
+  .switch.ligado .bola{left:38px;}
+  .status-wifi{font-size:15px;font-weight:bold;margin-top:4px;}
+
+  /* ===== ACESSIBILIDADE: REDUZIR MOVIMENTO ===== */
+  @media (prefers-reduced-motion: reduce){
+    .btn-ouvir.falando,.dica:hover{animation:none;transform:none;}
+  }
+
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-touch" viewBox="0 0 24 24"><path fill="currentColor" d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path fill="currentColor" d="M23 5.5V20c0 2.2-1.8 4-4 4h-7.3c-1.08 0-2.1-.43-2.85-1.19L1 14.83s1.26-1.23 1.3-1.25c.22-.19.49-.29.79-.29.22 0 .42.06.6.16.04.01 4.31 2.46 4.31 2.46V4c0-.83.67-1.5 1.5-1.5S11 3.17 11 4v7h1V1.5c0-.83.67-1.5 1.5-1.5S15 .67 15 1.5V11h1V2.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5V11h1V5.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5z"/></symbol>
+  <symbol id="i-swipe" viewBox="0 0 24 24"><path fill="currentColor" d="m17 16 4-4-4-4v3H9v2h8v3zM7 8l-4 4 4 4v-3h8v-2H7V8z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path fill="currentColor" d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></symbol>
+  <symbol id="i-battery" viewBox="0 0 24 24"><path fill="currentColor" d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></symbol>
+  <symbol id="i-apps" viewBox="0 0 24 24"><path fill="currentColor" d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></symbol>
+</svg>
+
+<header>
+  <a href="../modulos.html" class="btn-voltar"><span class="ico"><svg><use href="#i-back"/></svg></span> Voltar</a>
+  <h1><span class="ico"><svg><use href="#i-apps"/></svg></span> Conhecendo o Celular</h1>
+</header>
+
+<main>
+
+  <h2 class="secao"><span class="ico"><svg><use href="#i-book"/></svg></span> O básico do seu celular</h2>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-touch"/></svg></span></span>
+    <div>
+      <h3>Como usar a tela com o dedo</h3>
+      <button class="btn-ouvir" onclick="ouvir(this, 'Como usar a tela com o dedo. São três movimentos. Tocar: é um toque rápido com o dedo, para abrir alguma coisa. Segurar: é manter o dedo pressionado na tela por um tempinho. Arrastar: é deslizar o dedo pela tela, para subir ou descer. Lembre-se: não precisa apertar forte! Um toque bem leve já funciona.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <ul class="lista-toques">
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-touch"/></svg></span></span> <span><strong>Tocar:</strong> um toque rápido para abrir algo</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-hand"/></svg></span></span> <span><strong>Segurar:</strong> manter o dedo pressionado</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-swipe"/></svg></span></span> <span><strong>Arrastar:</strong> deslizar o dedo pela tela (subir, descer)</span></li>
+      </ul>
+      <p class="aviso"><span class="ico"><svg><use href="#i-info"/></svg></span> <span class="texto-aviso">Não precisa apertar forte! Um toque leve já funciona.</span></p>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-sound"/></svg></span></span>
+    <div>
+      <h3>Volume e brilho da tela</h3>
+      <button class="btn-ouvir" onclick="ouvir(this, 'Volume e brilho da tela. Os botões na lateral do celular aumentam e diminuem o som. A tela pode ficar mais clara para você enxergar melhor. Se a tela estiver muito escura, aumente o brilho nos ajustes.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <p>Os botões na <strong>lateral</strong> aumentam e diminuem o <strong>som</strong>. A tela pode ficar mais <strong>clara</strong> para enxergar melhor.</p>
+      <p class="aviso"><span class="ico"><svg><use href="#i-info"/></svg></span> <span class="texto-aviso">Tela muito escura? Aumente o brilho nos ajustes. Som baixo? Use os botões da lateral.</span></p>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-wifi"/></svg></span></span>
+    <div>
+      <h3>O que é o Wi-Fi?</h3>
+      <button class="btn-ouvir" onclick="ouvir(this, 'O que é o Wi-Fi. Wi-Fi é a internet sem fio da sua casa. Ligado nele, você usa o WhatsApp e a internet sem gastar seus dados. O símbolo do Wi-Fi parece um leque no alto da tela.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <p>Wi-Fi é a <strong>internet sem fio</strong> da sua casa. Ligado nele, você usa o WhatsApp e a internet <strong>sem gastar</strong> seus dados.</p>
+      <p class="aviso"><span class="ico"><svg><use href="#i-info"/></svg></span> <span class="texto-aviso">O símbolo do Wi-Fi parece um <strong>leque</strong> no alto da tela.</span></p>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-battery"/></svg></span></span>
+    <div>
+      <h3>Bateria e carregador</h3>
+      <button class="btn-ouvir" onclick="ouvir(this, 'Bateria e carregador. Quando a bateria está baixa e fica vermelha, coloque o celular para carregar. O celular avisa quando precisa. Você pode usar o celular enquanto ele carrega, sem problema.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <p>Quando a bateria está <strong>baixa (vermelha)</strong>, coloque para carregar. O celular avisa quando precisa.</p>
+      <p class="aviso"><span class="ico"><svg><use href="#i-info"/></svg></span> <span class="texto-aviso">Não use o celular enquanto carrega, a sua bateria pode viciar!</span></p>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-apps"/></svg></span></span>
+    <div>
+      <h3>Aplicativos (os "quadradinhos")</h3>
+      <button class="btn-ouvir" onclick="ouvir(this, 'Aplicativos, os quadradinhos. Cada ícone, aquele quadradinho colorido, é um aplicativo. Toque nele para abrir. Cada um faz uma coisa: ligar, mandar mensagem, ou ver fotos.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <p>Cada <strong>ícone</strong> (quadradinho colorido) é um aplicativo. Toque nele para <strong>abrir</strong>. Cada um faz uma coisa: ligar, mandar mensagem, ver fotos.</p>
+    </div>
+  </div>
+
+  <div class="alerta">
+  <button class="btn-ouvir" onclick="ouvir(this, 'Sem medo de errar! Mexer no celular não estraga nada. Quanto mais você usa, mais aprende!')">
+    <span class="ico"><svg><use href="#i-sound"/></svg></span>
+  </button>
+  <p class="alerta-titulo">
+    <span class="ico"><svg><use href="#i-warning"/></svg></span>
+    <strong>Sem medo de errar!</strong>
+  </p>
+  <p class="alerta-texto">Mexer no celular não estraga nada. Quanto mais você usa, mais aprende! 💪</p>
+</div>
+
+
+
+  <h2 class="secao"><span class="ico"><svg><use href="#i-touch"/></svg></span> Pratique fazendo com o dedo!</h2>
+  <p class="progresso" id="progresso">Atividade 1 de 4</p>
+
+  <div id="quiz">
+    <div class="celular">
+      <div class="tela">
+        <div class="topo">
+          <div class="foto" id="foto">📱</div>
+          <div>
+            <div class="nome" id="titulo">Meu Celular</div>
+            <div class="status">vamos praticar</div>
+          </div>
+        </div>
+        <div class="conteudo" id="conteudo"></div>
+        <div class="instrucao" id="instrucao"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="btn-proximo" id="btnProximo" onclick="proxima()">Próxima ➤</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <p style="font-size:22px;font-weight:bold;">🎉 Você terminou!</p>
+    <p class="nota" id="nota">0 / 4</p>
+    <div class="barra-fundo"><div class="barra-cheia" id="barra"></div></div>
+    <p id="mensagemFinal"></p>
+  </div>
+
+</main>
+
+<footer>
+  <a href="../modulos.html" class="btn-inicio"><span class="ico"><svg><use href="#i-home"/></svg></span> Voltar ao início</a>
+</footer>
+
+<script>
+  let vozBR = null;
+  function carregarVoz(){
+    const vozes = speechSynthesis.getVoices();
+    vozBR = vozes.find(v=>v.lang==='pt-BR') || vozes.find(v=>v.lang.startsWith('pt')) || null;
+  }
+  carregarVoz();
+  if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=carregarVoz;
+
+  function limparEmojis(t){ return t.replace(/[^\wÀ-úçÇ\s,!?.:]/g,''); }
+
+  function ouvir(botao, texto){
+    if(!('speechSynthesis' in window)){ alert('Seu aparelho não tem leitura de voz.'); return; }
+    if(speechSynthesis.speaking){
+      speechSynthesis.cancel();
+      document.querySelectorAll('.btn-ouvir.falando').forEach(b=>{
+        b.classList.remove('falando');
+        b.innerHTML = '<span class="ico"><svg><use href="#i-sound"/></svg></span>';
+      });
+      return;
+    }
+    const fala = new SpeechSynthesisUtterance(limparEmojis(texto));
+    fala.lang='pt-BR'; if(vozBR) fala.voice=vozBR;
+    fala.rate=0.85; fala.pitch=1; fala.volume=1;
+    if(botao){ botao.classList.add('falando'); }
+    fala.onend=()=>{
+      if(botao){
+        botao.classList.remove('falando');
+        botao.innerHTML = '<span class="ico"><svg><use href="#i-sound"/></svg></span>';
+      }
+    };
+    speechSynthesis.speak(fala);
+  }
+
+  const atividades = [
+    { tipo:'tocar', foto:'👆', titulo:'Tocar no ícone',
+      texto:'Você quer ABRIR o aplicativo do TELEFONE para ligar para alguém.',
+      instrucao:'👆 Toque no ícone do telefone ☎️',
+      explica:'Isso! Um toque leve já abre o aplicativo. Sem apertar forte! 👍' },
+    { tipo:'arrastar', foto:'🔊', titulo:'Arrastar o volume',
+      texto:'O som está muito baixo. Aumente o VOLUME até o máximo.',
+      instrucao:'👉 Arraste a barrinha azul até o final (100)',
+      explica:'Muito bem! Arrastando a barrinha você controla o som. 🔊' },
+    { tipo:'ligar', foto:'📶', titulo:'Ligar o Wi-Fi',
+      texto:'Você chegou em casa e quer usar a internet sem gastar seus dados.',
+      instrucao:'👆 Toque no botão para LIGAR o Wi-Fi',
+      explica:'Perfeito! Wi-Fi ligado = internet sem gastar seus dados. 📶' },
+    { tipo:'segurar', foto:'✊', titulo:'Segurar o dedo',
+      texto:'Para ver as opções de um aplicativo, segure o dedo nele.',
+      instrucao:'✊ Segure o dedo no ícone de fotos por 1 segundo',
+      explica:'Excelente! Segurar o dedo abre o menu de opções. ✊' }
+  ];
+
+  let atual = 0, acertos = 0, jaPontuou = false;
+  const elProg = document.getElementById('progresso');
+  const elFoto = document.getElementById('foto');
+  const elTitulo = document.getElementById('titulo');
+  const elConteudo = document.getElementById('conteudo');
+  const elInstr = document.getElementById('instrucao');
+  const elFeed = document.getElementById('feedback');
+  const elProx = document.getElementById('btnProximo');
+
+  carregar();
+
+  function carregar() {
+    const a = atividades[atual];
+    jaPontuou = false;
+    elProg.textContent = 'Atividade ' + (atual + 1) + ' de ' + atividades.length;
+    elFoto.textContent = a.foto;
+    elTitulo.textContent = a.titulo;
+    elInstr.textContent = a.instrucao;
+    elFeed.style.display = 'none';
+    elProx.style.display = 'none';
+    if (a.tipo === 'tocar') montarTocar();
+    else if (a.tipo === 'arrastar') montarArrastar();
+    else if (a.tipo === 'ligar') montarLigar();
+    else if (a.tipo === 'segurar') montarSegurar();
+  }
+
+  function montarTocar() {
+    elConteudo.innerHTML =
+      '<div class="cenario-txt">' + atividades[atual].texto + '</div>' +
+      '<div class="grade-apps">' +
+        appHtml('alvo','☎️','Telefone','tocou') +
+        appHtml('','📷','Câmera','errou') +
+        appHtml('','🎵','Música','errou') +
+        appHtml('','⚙️','Ajustes','errou') +
+        appHtml('','📅','Agenda','errou') +
+        appHtml('','🖼️','Fotos','errou') +
+      '</div>';
+  }
+  function appHtml(classe, emoji, nome, acao) {
+    return '<div class="app ' + classe + '" onclick="apertou(this,\'' + acao + '\')">' +
+           '<div class="quadro">' + emoji + '</div>' +
+           '<div class="nome-app">' + nome + '</div></div>';
+  }
+  function apertou(el, acao) {
+    const q = el.querySelector('.quadro');
+    q.classList.add('toque');
+    setTimeout(() => q.classList.remove('toque'), 150);
+    if (acao === 'tocou') { q.classList.add('aberto'); vencer(); }
+    else mostrarFeed(false, '❌ Esse não é o telefone. Procure o ícone ☎️ que está piscando!', false);
+  }
+
+  function montarArrastar() {
+    elConteudo.innerHTML =
+      '<div class="cenario-txt">' + atividades[atual].texto + '</div>' +
+      '<div class="slider-box"><div class="slider-linha">' +
+        '<span class="ic">🔊</span>' +
+        '<input type="range" id="vol" min="0" max="100" value="20" oninput="mudouVol(this.value)">' +
+        '<span class="valor-slider" id="valVol">20</span>' +
+      '</div></div>';
+  }
+  function mudouVol(v) {
+    document.getElementById('valVol').textContent = v;
+    if (parseInt(v) >= 100 && !jaPontuou) vencer();
+  }
+
+  function montarLigar() {
+    elConteudo.innerHTML =
+      '<div class="cenario-txt">' + atividades[atual].texto + '</div>' +
+      '<div class="toggle-box">' +
+        '<span class="rotulo">📶 Wi-Fi</span>' +
+        '<div class="switch" id="sw" onclick="mexerWifi()"><div class="bola"></div></div>' +
+      '</div>' +
+      '<div class="status-wifi" id="statusWifi" style="color:#c62828;">Desligado</div>';
+  }
+  function mexerWifi() {
+    const sw = document.getElementById('sw');
+    const st = document.getElementById('statusWifi');
+    sw.classList.toggle('ligado');
+    if (sw.classList.contains('ligado')) {
+      st.textContent = '✓ Ligado (conectado)';
+      st.style.color = '#2e7d32';
+      if (!jaPontuou) vencer();
+    } else {
+      st.textContent = 'Desligado';
+      st.style.color = '#c62828';
+    }
+  }
+
+  function montarSegurar() {
+    elConteudo.innerHTML =
+      '<div class="cenario-txt">' + atividades[atual].texto + '</div>' +
+      '<div class="grade-apps" style="grid-template-columns:1fr;justify-items:center;">' +
+        '<div class="app alvo" id="appSeg">' +
+          '<div class="quadro" id="quadroSeg">🖼️</div>' +
+          '<div class="nome-app">Fotos</div></div>' +
+      '</div>' +
+      '<div class="menu-segurar" id="menuSeg"><div>📂 Abrir</div><div>ℹ️ Informações</div><div>🗑️ Remover</div></div>';
+
+    const app = document.getElementById('appSeg');
+    let timer = null;
+    const iniciar = (e) => {
+      e.preventDefault();
+      document.getElementById('quadroSeg').classList.add('segurando');
+      timer = setTimeout(() => {
+        document.getElementById('menuSeg').classList.add('mostra');
+        document.getElementById('quadroSeg').classList.remove('segurando');
+        if (!jaPontuou) vencer();
+      }, 1000);
+    };
+    const parar = () => {
+      clearTimeout(timer);
+      document.getElementById('quadroSeg').classList.remove('segurando');
+    };
+    app.addEventListener('mousedown', iniciar);
+    app.addEventListener('mouseup', parar);
+    app.addEventListener('mouseleave', parar);
+    app.addEventListener('touchstart', iniciar, {passive:false});
+    app.addEventListener('touchend', parar);
+  }
+
+  function vencer() {
+    if (jaPontuou) return;
+    jaPontuou = true;
+    acertos++;
+    mostrarFeed(true, '✅ ' + atividades[atual].explica, true);
+  }
+
+  function mostrarFeed(acertou, msg, mostraProx) {
+    elFeed.className = 'feedback ' + (acertou ? 'acertou' : 'errou');
+    elFeed.textContent = msg;
+    elFeed.style.display = 'block';
+    ouvir(null, msg);
+    if (mostraProx) {
+      elProx.style.display = 'block';
+      elProx.textContent = (atual + 1 < atividades.length) ? 'Próxima ➤' : 'Ver resultado 🎉';
+    }
+  }
+
+  function proxima() {
+    speechSynthesis.cancel();
+    atual++;
+    if (atual < atividades.length) carregar();
+    else finalizar();
+  }
+
+  function finalizar() {
+    document.getElementById('quiz').style.display = 'none';
+    elProg.style.display = 'none';
+    const res = document.getElementById('resultado');
+    res.style.display = 'block';
+    document.getElementById('nota').textContent = acertos + ' / ' + atividades.length;
+    const pct = (acertos / atividades.length) * 100;
+    setTimeout(() => { document.getElementById('barra').style.width = pct + '%'; }, 200);
+    let msg = '';
+    if (acertos === 4) msg = 'Perfeito! Você já mexe no celular com confiança! 📱🎉';
+    else if (acertos >= 2) msg = 'Muito bem! Está pegando o jeito do celular! 😊';
+    else msg = 'Não desanime! Pratique com calma, você vai conseguir! 💪';
+    document.getElementById('mensagemFinal').textContent = msg;
+    ouvir(null, 'Você terminou! Sua nota foi ' + acertos + ' de ' + atividades.length + '. ' + msg);
+    registrarDesempenho('conhecendo-celular',acertos,atividades.length);
+  }
+
+  function registrarDesempenho(chave, acertos, total){
+    const dados = JSON.parse(localStorage.getItem('conectaIdoso_desempenho') || '{}');
+    dados[chave] = { acertos: acertos, total: total, data: new Date().toLocaleDateString('pt-BR') };
+    localStorage.setItem('conectaIdoso_desempenho', JSON.stringify(dados));
+  }
+</script>
+
+</body>
+</html>

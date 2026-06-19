@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  
+  <!-- ===== FAVICON (logo na aba) ===== -->
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/favicon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../icons/favicon.png">
+<link rel="shortcut icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/favicon.png">
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA e Fake News - Idosos Conectados</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Arial,sans-serif;font-size:18px;line-height:1.6;
+       color:#222;background:#eef2f5;}
+
+  /* ===== ÍCONES SVG ===== */
+  .ico{display:inline-flex;vertical-align:middle;width:1em;height:1em;}
+  .ico svg{width:100%;height:100%;display:block;}
+
+  /* TOPO */
+  header{background:#4a148c;color:#fff;padding:16px;
+          display:flex;align-items:center;gap:14px;}
+  header h1{font-size:24px;display:flex;align-items:center;gap:10px;}
+  .btn-voltar{background:#fff;color:#4a148c;text-decoration:none;
+              font-weight:bold;padding:10px 18px;border-radius:25px;flex-shrink:0;
+              display:inline-flex;align-items:center;gap:6px;}
+
+  main{max-width:600px;margin:0 auto;padding:24px 16px;}
+  .intro{font-size:20px;margin-bottom:20px;text-align:center;}
+
+  /* ===== BOTÃO OUVIR (redondo, só ícone) ===== */
+  .btn-ouvir{
+    background:#f3e5f5;color:#4a148c;border:2px solid #ab47bc;
+    border-radius:50%;width:50px;height:50px;padding:0;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:transform .12s;overflow:hidden;font-size:0;line-height:0;flex-shrink:0;
+  }
+  .btn-ouvir .ico{width:24px;height:24px;font-size:24px;flex-shrink:0;}
+  .btn-ouvir:active{transform:scale(.96);}
+  .btn-ouvir:focus-visible{outline:3px solid #4a148c;outline-offset:2px;}
+  .btn-ouvir.falando{background:#ab47bc;color:#fff;}
+  .intro .btn-ouvir{margin-top:8px;}
+
+  /* DICAS (explicações) */
+  h2.secao{font-size:23px;color:#4a148c;margin:28px 0 14px;
+           border-bottom:3px solid #ab47bc;padding-bottom:6px;
+           display:flex;align-items:center;gap:10px;}
+  .dica{background:#fff;border-radius:14px;padding:18px;margin-bottom:16px;
+        box-shadow:0 3px 8px rgba(0,0,0,0.1);display:flex;gap:14px;align-items:flex-start;}
+  .dica .icone{flex-shrink:0;width:48px;height:48px;border-radius:12px;
+        background:#f3e5f5;color:#4a148c;display:flex;align-items:center;justify-content:center;}
+  .dica .icone .ico{width:28px;height:28px;}
+  .dica h3{font-size:19px;color:#4a148c;margin-bottom:4px;}
+
+  /* Ouvir no canto dos cards .dica */
+  .dica > div{position:relative;flex:1;min-width:0;padding-right:58px;}
+  .dica .btn-ouvir{position:absolute;top:-2px;right:0;margin-top:0;}
+
+  .lista-sinais{list-style:none;margin-top:8px;display:flex;
+                flex-direction:column;gap:10px;}
+  .lista-sinais li{display:flex;align-items:flex-start;gap:10px;font-size:17px;}
+  .sinal{background:#f3e5f5;color:#4a148c;border-radius:10px;padding:7px;
+         display:inline-flex;flex-shrink:0;}
+  .sinal .ico{width:22px;height:22px;}
+
+  /* AVISO (dica interna amarela) */
+  .aviso{
+    margin-top:12px;
+    background:#fff8e1;
+    border-left:5px solid #ffb300;
+    padding:10px 14px 10px 40px;
+    border-radius:8px;
+    font-size:16px;
+    color:#5d4037;
+    position:relative;
+  }
+  .aviso .ico{
+    width:22px;
+    height:22px;
+    color:#ffb300;
+    position:absolute;
+    left:10px;
+    top:11px;
+  }
+
+  /* ===== ALERTA "REGRA DE OURO" (áudio dentro + cor laranja) ===== */
+  .alerta{background:#fff3e0;border-left:6px solid #ef6c00;
+          padding:16px;border-radius:10px;margin:18px 0;font-size:18px;
+          display:flex;align-items:center;gap:12px;}
+  .alerta .ico-alerta{width:28px;height:28px;color:#ef6c00;flex-shrink:0;}
+  .alerta .texto{flex:1;min-width:0;}
+
+  /* Botão de áudio com COR DE ALERTA (laranja) */
+  .btn-ouvir.alerta-cor{background:#ffe0b2;border:2px solid #ef6c00;color:#ef6c00;}
+  .btn-ouvir.alerta-cor.falando{background:#ef6c00;color:#fff;}
+  .btn-ouvir.alerta-cor:focus-visible{outline:3px solid #ef6c00;}
+
+  /* PROGRESSO */
+  .progresso{text-align:center;font-weight:bold;color:#4a148c;
+             font-size:18px;margin-bottom:16px;}
+
+  /* ===== CELULAR SIMULADO (EMOJIS MANTIDOS) ===== */
+  .celular{max-width:340px;margin:0 auto;background:#111;
+           border-radius:34px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+  .tela{position:relative;background:#e5ddd5;border-radius:24px;overflow:hidden;min-height:520px;
+        display:flex;flex-direction:column;}
+  .whats-topo{background:#4a148c;color:#fff;padding:12px 14px;
+              display:flex;align-items:center;gap:10px;}
+  .whats-topo .foto{width:42px;height:42px;border-radius:50%;
+                    background:#ab47bc;display:flex;align-items:center;
+                    justify-content:center;font-size:22px;flex-shrink:0;}
+  .whats-topo .nome{font-weight:bold;font-size:17px;}
+  .whats-topo .status{font-size:13px;opacity:0.85;}
+  .conversa{flex:1;padding:14px;display:flex;flex-direction:column;
+            gap:10px;overflow-y:auto;}
+  .balao{max-width:85%;padding:10px 14px;border-radius:14px;
+         font-size:16px;line-height:1.4;box-shadow:0 1px 2px rgba(0,0,0,0.15);}
+  .recebida{background:#fff;align-self:flex-start;border-top-left-radius:2px;}
+  .hora{display:block;font-size:11px;color:#888;text-align:right;margin-top:2px;}
+  .card-conteudo{background:#f3e5f5;border-radius:10px;padding:10px;margin-top:6px;}
+  .card-conteudo .img-fake{font-size:46px;text-align:center;
+        background:#e1bee7;border-radius:8px;padding:14px;margin-bottom:8px;}
+  .card-conteudo .titulo-fake{font-weight:bold;color:#4a148c;font-size:15px;}
+  .card-conteudo .fonte-fake{font-size:12px;color:#888;margin-top:4px;}
+  .instrucao{background:#fffde7;border-top:2px solid #f0e6a0;padding:14px;
+    font-size:16px;font-weight:bold;color:#5d4037;text-align:center;}
+  .opcoes{padding:12px;display:flex;flex-direction:column;gap:10px;background:#f0f0f0;}
+  .opc{background:#fff;border:2px solid #ab47bc;color:#4a148c;
+       font-size:16px;font-weight:bold;padding:14px;border-radius:12px;
+       cursor:pointer;text-align:left;}
+  .opc:active{transform:scale(0.97);}
+  .opc.certa{background:#66bb6a;color:#fff;border-color:#66bb6a;}
+  .opc.errada{background:#ffcdd2;color:#c62828;border-color:#c62828;}
+  .opc:disabled{cursor:default;}
+  .feedback{padding:14px;font-size:16px;font-weight:bold;display:none;text-align:center;}
+  .acertou{background:#e8f5e9;color:#2e7d32;}
+  .errou{background:#ffebee;color:#c62828;}
+  .btn-proximo{display:none;width:calc(100% - 24px);margin:0 12px 14px;
+               background:#4a148c;color:#fff;font-size:18px;font-weight:bold;
+               padding:14px;border:none;border-radius:12px;cursor:pointer;}
+
+  /* RESULTADO */
+  .resultado{display:none;background:#fff;border-radius:16px;
+             padding:30px 20px;text-align:center;margin-top:20px;
+             box-shadow:0 3px 10px rgba(0,0,0,0.15);}
+  .nota{font-size:44px;font-weight:bold;color:#ab47bc;margin:10px 0;}
+  .barra-fundo{background:#e0e0e0;border-radius:20px;height:28px;
+               overflow:hidden;margin:18px 0;}
+  .barra-cheia{background:#ab47bc;height:100%;width:0;
+               transition:width 0.8s;border-radius:20px;}
+
+  footer{text-align:center;padding:30px 16px;}
+  .btn-inicio{display:inline-flex;align-items:center;gap:8px;background:#4a148c;color:#fff;
+              text-decoration:none;font-size:20px;font-weight:bold;
+              padding:16px 28px;border-radius:30px;}
+
+  /* ===== ACESSIBILIDADE: REDUZIR MOVIMENTO ===== */
+  @media (prefers-reduced-motion: reduce){
+    .btn-ouvir.falando,.dica:hover{animation:none;transform:none;}
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ===== SVG ÍCONES (Material Icons OFICIAIS) ===== -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-robot" viewBox="0 0 24 24"><path fill="currentColor" d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3zm-2 8H6V7h12v10zM9 13c-.83 0-1.5-.67-1.5-1.5S8.17 10 9 10s1.5.67 1.5 1.5S9.83 13 9 13zm6 0c-.83 0-1.5-.67-1.5-1.5S14.17 10 15 10s1.5.67 1.5 1.5S15.83 13 15 13zm-3 4c-1.86 0-3.41-1.28-3.86-3h7.72c-.45 1.72-2 3-3.86 3z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M11 18l-6-6 6-6"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></symbol>
+  <symbol id="i-news" viewBox="0 0 24 24"><path fill="currentColor" d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path fill="currentColor" d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle fill="currentColor" cx="12" cy="19" r="2"/><path fill="currentColor" d="M10 3h4v12h-4z"/></symbol>
+  <symbol id="i-cancel" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></symbol>
+  <symbol id="i-block" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><path fill="currentColor" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path fill="currentColor" d="M23 5.5V20c0 2.2-1.8 4-4 4h-7.3c-1.08 0-2.1-.43-2.85-1.19L1 14.83s1.26-1.23 1.3-1.25c.22-.19.49-.29.79-.29.22 0 .42.06.6.16.04.01 4.31 2.46 4.31 2.46V4c0-.83.67-1.5 1.5-1.5S11 3.17 11 4v7h1V1.5c0-.83.67-1.5 1.5-1.5S15 .67 15 1.5V11h1V2.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5V11h1V5.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5z"/></symbol>
+  <symbol id="i-face" viewBox="0 0 24 24"><path fill="currentColor" d="M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z"/></symbol>
+  <symbol id="i-abc" viewBox="0 0 24 24"><path fill="currentColor" d="M21 9c0-.55-.45-1-1-1h-3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-1.5c0-.42-.33-.75-.75-.75H19v-1h1.25c.42 0 .75-.33.75-.75V9zm-1.5.5v.75H18v3.5h1.5v.75H17.5v-5h2zM6 8H3c-.55 0-1 .45-1 1v7h1.5v-2.5h2V16H7V9c0-.55-.45-1-1-1zm-.5 4h-2v-2.5h2V12zm9.5-3c0-.55-.45-1-1-1H9.5c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1H13c.55 0 1-.45 1-1v-1.5c0-.28-.22-.5-.5-.5.28 0 .5-.22.5-.5V9zm-1.5 4.5v.75h-2v-1h2v.25zm0-2.5v.75h-2V9.5h2V11z"/></symbol>
+  <symbol id="i-confused" viewBox="0 0 24 24"><path fill="currentColor" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 3c-2.33 0-4.31 1.46-5.11 3.5h1.61c.69-1.19 1.97-2 3.5-2s2.81.81 3.5 2h1.61c-.8-2.04-2.78-3.5-5.11-3.5z"/></symbol>
+</svg>
+
+<header>
+  <a href="../modulos.html" class="btn-voltar"><span class="ico"><svg><use href="#i-back"/></svg></span> Voltar</a>
+  <h1><span class="ico"><svg><use href="#i-robot"/></svg></span> IA e Fake News</h1>
+</header>
+
+<main>
+
+  <!-- ===== PARTE 1: EXPLICAÇÕES ===== -->
+  <h2 class="secao"><span class="ico"><svg><use href="#i-book"/></svg></span> O que você precisa saber</h2>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-news"/></svg></span></span>
+    <div>
+      <button class="btn-ouvir" aria-label="Ouvir explicação" onclick="ouvir(this, 'O que é Fake News? É uma notícia falsa, inventada para enganar ou assustar. Espalha rápido nos grupos da família e do WhatsApp. Antes de repassar, pergunte: será que isso é verdade mesmo?')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <h3>O que é "Fake News"?</h3>
+      <p>É uma notícia <strong>falsa</strong>, inventada para enganar ou assustar. Espalha rápido nos grupos da família e do WhatsApp.</p>
+      <p class="aviso"><span class="ico"><svg><use href="#i-bulb"/></svg></span> Antes de repassar, pergunte: "Será que isso é verdade mesmo?"</p>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-search"/></svg></span></span>
+    <div>
+      <button class="btn-ouvir" aria-label="Ouvir explicação" onclick="ouvir(this, 'Sinais de uma notícia falsa: Título com muito drama, como urgente ou vai acabar. Erros de português e letras em caixa alta. Não diz de onde veio, sem jornal conhecido. E pede para compartilhar com pressa.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <h3>Sinais de uma notícia falsa</h3>
+      <ul class="lista-sinais">
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-alert"/></svg></span></span> <span>Título com <strong>muito drama</strong> ("URGENTE!", "VAI ACABAR!")</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-cancel"/></svg></span></span> <span>Erros de português e <strong>letras em CAIXA ALTA</strong></span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-block"/></svg></span></span> <span>Não diz <strong>de onde veio</strong> (sem jornal conhecido)</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-clock"/></svg></span></span> <span>Pede para <strong>compartilhar com pressa</strong></span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-robot"/></svg></span></span>
+    <div>
+      <button class="btn-ouvir" aria-label="Ouvir explicação" onclick="ouvir(this, 'Conteúdo feito por inteligência artificial. Hoje o computador consegue criar fotos, vozes e vídeos falsos muito parecidos com os de verdade. Até a voz de um parente pode ser imitada! Se um parente mandar áudio pedindo dinheiro, ligue para ele antes de fazer qualquer coisa.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <h3>Conteúdo feito por IA</h3>
+      <p>Hoje o computador (IA) consegue criar <strong>fotos, vozes e vídeos falsos</strong> muito parecidos com os de verdade. Até a voz de um parente pode ser imitada!</p>
+      <p class="aviso"><span class="ico"><svg><use href="#i-warning"/></svg></span> Se um "parente" mandar áudio pedindo dinheiro, <strong>ligue para ele</strong> antes de fazer qualquer coisa.</p>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-image"/></svg></span></span>
+    <div>
+      <button class="btn-ouvir" aria-label="Ouvir explicação" onclick="ouvir(this, 'Como desconfiar de uma foto falsa. Observe: Mãos com dedos a mais ou tortos. Rostos lisos demais, sem rugas naturais. Letras e placas embaralhadas no fundo. E quando algo parece estranho, mesmo que você não saiba dizer o quê.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <h3>Como desconfiar de uma foto falsa</h3>
+      <ul class="lista-sinais">
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-hand"/></svg></span></span> <span>Mãos com <strong>dedos a mais</strong> ou tortos</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-face"/></svg></span></span> <span>Rostos <strong>"lisos demais"</strong>, sem rugas naturais</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-abc"/></svg></span></span> <span>Letras e placas <strong>embaralhadas</strong> no fundo</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-confused"/></svg></span></span> <span>Algo parece <strong>"estranho"</strong>, mesmo que você não saiba dizer o quê</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== ALERTA REGRA DE OURO (áudio DENTRO + cor laranja) ===== -->
+  <div class="alerta">
+    <span class="ico ico-alerta"><svg><use href="#i-warning"/></svg></span>
+    <span class="texto"><strong>Regra de ouro:</strong> Na dúvida, <strong>NÃO compartilhe</strong>. Mostre para alguém da família e confirme antes!</span>
+    <button class="btn-ouvir alerta-cor" aria-label="Ouvir regra de ouro"
+            onclick="ouvir(this, 'Regra de ouro: Na dúvida, não compartilhe. Mostre para alguém da família e confirme antes!')">
+      <span class="ico"><svg><use href="#i-sound"/></svg></span>
+    </button>
+  </div>
+
+  <!-- ===== PARTE 2: PRÁTICA (ícone lupa nítido) ===== -->
+  <h2 class="secao"><span class="ico"><svg><use href="#i-search"/></svg></span> Pratique: é verdade ou golpe?</h2>
+  <p class="progresso" id="progresso">Situação 1 de 4</p>
+
+  <div id="quiz">
+    <div class="celular">
+      <div class="tela">
+        <div class="whats-topo">
+          <div class="foto" id="foto">👤</div>
+          <div>
+            <div class="nome" id="contato">Contato</div>
+            <div class="status">online</div>
+          </div>
+        </div>
+        <div class="conversa" id="conversa"></div>
+        <div id="areaAtividade"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="btn-proximo" id="btnProximo" onclick="proxima()">Próxima ➤</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <p style="font-size:22px;font-weight:bold;">🎉 Você terminou!</p>
+    <p class="nota" id="nota">0 / 4</p>
+    <div class="barra-fundo"><div class="barra-cheia" id="barra"></div></div>
+    <p id="mensagemFinal"></p>
+  </div>
+
+</main>
+
+<footer>
+  <a href="../modulos.html" class="btn-inicio"><span class="ico"><svg><use href="#i-home"/></svg></span> Voltar ao início</a>
+</footer>
+
+<script>
+  /* ===== LEITURA EM VOZ ALTA ===== */
+  let vozBR = null;
+  function carregarVoz(){
+    const vozes = speechSynthesis.getVoices();
+    vozBR = vozes.find(v=>v.lang==='pt-BR') || vozes.find(v=>v.lang.startsWith('pt')) || null;
+  }
+  carregarVoz();
+  if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=carregarVoz;
+
+  function limparEmojis(t){ return t.replace(/[^\wÀ-úçÇ\s,!?.:"]/g,''); }
+
+  function ouvir(botao, texto){
+    if(!('speechSynthesis' in window)){ alert('Seu aparelho não tem leitura de voz.'); return; }
+    if(speechSynthesis.speaking){
+      speechSynthesis.cancel();
+      document.querySelectorAll('.btn-ouvir.falando').forEach(b=>b.classList.remove('falando'));
+      return;
+    }
+    const fala = new SpeechSynthesisUtterance(limparEmojis(texto));
+    fala.lang='pt-BR'; if(vozBR) fala.voice=vozBR;
+    fala.rate=0.85; fala.pitch=1; fala.volume=1;
+    if(botao){ botao.classList.add('falando'); }
+    fala.onend=()=>{ if(botao){ botao.classList.remove('falando'); } };
+    speechSynthesis.speak(fala);
+  }
+
+  /* ===== As 4 atividades ===== */
+  const atividades = [
+    {
+      foto: '👨‍👩‍👧', contato: 'Grupo da Família',
+      mensagem: 'Olha o que mandaram aqui! 😨',
+      card: { img: '😱',
+        titulo: 'URGENTE!! GOVERNO VAI BLOQUEAR TODAS AS CONTAS AMANHÃ!! COMPARTILHE ANTES QUE APAGUEM!!!',
+        fonte: 'Recebido de: número desconhecido' },
+      instrucao: 'O que você faz com essa mensagem?',
+      opcoes: [
+        {texto:'🚫 Não compartilho e desconfio', certa:true},
+        {texto:'📤 Mando pra todo mundo na hora', certa:false},
+        {texto:'😨 Acredito e fico com medo', certa:false}
+      ],
+      explica: 'Isso! Título com PRESSA, CAIXA ALTA e drama = quase sempre é FALSO. Não repasse! 🛡️'
+    },
+    {
+      foto: '🏦', contato: 'Banco (?)',
+      mensagem: 'Mensagem recebida agora:',
+      card: { img: '💳',
+        titulo: 'Sua conta será bloqueada! Clique no link e confirme sua senha em 10 minutos.',
+        fonte: 'Remetente: "Banco-Seguro"' },
+      instrucao: 'O banco mandou esse link. O que fazer?',
+      opcoes: [
+        {texto:'🚫 Não clico. Banco não pede senha assim', certa:true},
+        {texto:'🔗 Clico e digito minha senha', certa:false},
+        {texto:'⏰ Faço rápido por causa do prazo', certa:false}
+      ],
+      explica: 'Exato! Banco NUNCA pede senha por link ou mensagem. É golpe. Apague e ligue pro banco. 🏦'
+    },
+    {
+      foto: '📞', contato: 'Áudio recebido',
+      mensagem: '🎤 "Vó, é o Pedro! Tô numa emergência, manda um PIX agora!" (voz parecida)',
+      card: null,
+      instrucao: 'A voz parece do seu neto pedindo PIX. O que fazer?',
+      opcoes: [
+        {texto:'📞 Ligo pro meu neto antes de tudo', certa:true},
+        {texto:'💸 Mando o PIX rápido pra ajudar', certa:false},
+        {texto:'😟 Acredito porque a voz é igual', certa:false}
+      ],
+      explica: 'Muito bem! A IA imita vozes! SEMPRE ligue para a pessoa antes de mandar dinheiro. 🤖📞'
+    },
+    {
+      foto: '📱', contato: 'Amiga - Facebook',
+      mensagem: 'Olha essa foto incrível! É real? 🤔',
+      card: { img: '🖐️',
+        titulo: 'Foto de uma pessoa com 6 dedos na mão e rosto "liso demais"',
+        fonte: 'Compartilhado no Facebook' },
+      instrucao: 'Essa foto tem dedos a mais. O que isso indica?',
+      opcoes: [
+        {texto:'🤖 Provavelmente foi feita por IA (é falsa)', certa:true},
+        {texto:'📸 É uma foto normal de verdade', certa:false},
+        {texto:'🔁 Compartilho porque é bonita', certa:false}
+      ],
+      explica: 'Isso mesmo! Dedos a mais e rosto liso demais são sinais de foto feita por IA. 🖐️🤖'
+    }
+  ];
+
+  let atual = 0, acertos = 0, jaPontuou = false;
+  const elProg = document.getElementById('progresso');
+  const elFoto = document.getElementById('foto');
+  const elContato = document.getElementById('contato');
+  const elConversa = document.getElementById('conversa');
+  const elArea = document.getElementById('areaAtividade');
+  const elFeed = document.getElementById('feedback');
+  const elProx = document.getElementById('btnProximo');
+
+  carregar();
+
+  function carregar() {
+    const a = atividades[atual];
+    jaPontuou = false;
+    elProg.textContent = 'Situação ' + (atual + 1) + ' de ' + atividades.length;
+    elFoto.textContent = a.foto;
+    elContato.textContent = a.contato;
+
+    elConversa.innerHTML = '';
+    const b = document.createElement('div');
+    b.className = 'balao recebida';
+    let html = a.mensagem;
+    if (a.card) {
+      html += '<div class="card-conteudo">' +
+                '<div class="img-fake">' + a.card.img + '</div>' +
+                '<div class="titulo-fake">' + a.card.titulo + '</div>' +
+                '<div class="fonte-fake">' + a.card.fonte + '</div>' +
+              '</div>';
+    }
+    html += '<span class="hora">agora</span>';
+    b.innerHTML = html;
+    elConversa.appendChild(b);
+
+    elFeed.style.display = 'none';
+    elProx.style.display = 'none';
+
+    let opcHtml = '<div class="instrucao">' + a.instrucao + '</div><div class="opcoes">';
+    a.opcoes.forEach((o, i) => {
+      opcHtml += '<button class="opc" onclick="responder(' + i + ', this)">' + o.texto + '</button>';
+    });
+    opcHtml += '</div>';
+    elArea.innerHTML = opcHtml;
+  }
+
+  function responder(indice, botao) {
+    const a = atividades[atual];
+    const botoes = elArea.querySelectorAll('.opc');
+    botoes.forEach(b => b.disabled = true);
+
+    if (a.opcoes[indice].certa) {
+      botao.classList.add('certa');
+      if (!jaPontuou) { acertos++; jaPontuou = true; }
+      mostrarFeed(true, '✅ ' + a.explica);
+    } else {
+      botao.classList.add('errada');
+      botoes.forEach((b, i) => { if (a.opcoes[i].certa) b.classList.add('certa'); });
+      mostrarFeed(false, '❌ Cuidado! A verde é a opção segura. ' + a.explica);
+    }
+    elProx.style.display = 'block';
+    elProx.textContent = (atual + 1 < atividades.length) ? 'Próxima ➤' : 'Ver resultado 🎉';
+  }
+
+  function mostrarFeed(acertou, msg) {
+    elFeed.className = 'feedback ' + (acertou ? 'acertou' : 'errou');
+    elFeed.textContent = msg;
+    elFeed.style.display = 'block';
+    ouvir(null, msg);
+  }
+
+  function proxima() {
+    speechSynthesis.cancel();
+    atual++;
+    if (atual < atividades.length) carregar();
+    else finalizar();
+  }
+
+  function finalizar() {
+    document.getElementById('quiz').style.display = 'none';
+    elProg.style.display = 'none';
+    const res = document.getElementById('resultado');
+    res.style.display = 'block';
+    document.getElementById('nota').textContent = acertos + ' / ' + atividades.length;
+    const pct = (acertos / atividades.length) * 100;
+    setTimeout(() => { document.getElementById('barra').style.width = pct + '%'; }, 200);
+    let msg = '';
+    if (acertos === 4) msg = 'Perfeito! Você está esperto contra golpes e fake news! 🛡️🤖';
+    else if (acertos >= 2) msg = 'Muito bem! Continue desconfiando antes de compartilhar! 😊';
+    else msg = 'Não desanime! O importante é sempre desconfiar e confirmar. Você consegue! 💪';
+    document.getElementById('mensagemFinal').textContent = msg;
+    ouvir(null, 'Você terminou! Sua nota foi ' + acertos + ' de ' + atividades.length + '. ' + msg);
+    registrarDesempenho('ia-fakenews', acertos, atividades.length);
+  }
+
+  function registrarDesempenho(chave, acertos, total){
+    const dados = JSON.parse(localStorage.getItem('conectaIdoso_desempenho') || '{}');
+    dados[chave] = { acertos: acertos, total: total, data: new Date().toLocaleDateString('pt-BR') };
+    localStorage.setItem('conectaIdoso_desempenho', JSON.stringify(dados));
+  }
+</script>
+
+</body>
+</html>

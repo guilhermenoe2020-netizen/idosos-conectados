@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Idosos Conectados</title>
+
+  <!-- ===== ACELERA O CARREGAMENTO DOS ÍCONES (CDN) ===== -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+  <!-- ===== PRÉ-CARREGA A LOGO (corrige a piscada) ===== -->
+  <link rel="preload" as="image" href="icons/192.png" fetchpriority="high">
+
+  <!-- ===== FONT AWESOME (carregamento NÃO bloqueante) ===== -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  </noscript>
+
+  <!-- ===== FAVICON (logo na aba) ===== -->
+  <link rel="icon" type="image/png" href="icons/favicon.png">
+  <link rel="apple-touch-icon" href="icons/192.png">
+
+  <style>
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: linear-gradient(160deg, #eaf2ff 0%, #f6f9ff 100%);
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #2d3748;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Skip link (acessibilidade) */
+    .skip-link {
+      position: absolute; left: -999px; top: 8px; z-index: 2000;
+      background: #1a4fb4; color: #fff; padding: 12px 18px;
+      border-radius: 12px; font-weight: 700; font-size: 1.05rem;
+      text-decoration: none;
+    }
+    .skip-link:focus { left: 8px; outline: 3px solid #ffd600; }
+    body.alto-contraste .skip-link { background: #000; color: #ffd600; border: 2px solid #ffd600; }
+
+    /* ===== TOQUE ALEGRE: bolinhas de luz azuis no fundo ===== */
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(2px);
+      opacity: .30;
+      pointer-events: none;
+    }
+    body::before {
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, #8fc4ff, transparent 70%);
+      top: 120px; left: -70px;
+    }
+    body::after {
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, #b9d8ff, transparent 70%);
+      bottom: -80px; right: -70px;
+    }
+    body.alto-contraste::before,
+    body.alto-contraste::after { display: none; }
+
+    /* garante conteúdo acima das bolinhas */
+    .cabecalho, .conteudo, .rodape, .fab-acessibilidade,
+    .painel-acess, .painel-acess-overlay { position: relative; z-index: 1; }
+
+    /* =================== BOTÃO FLUTUANTE DE ACESSIBILIDADE =================== */
+    .fab-acessibilidade {
+      position: absolute;
+      top: 16px; right: 16px;
+      z-index: 1100;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1a4fb4;
+      color: #fff;
+      border: 3px solid #fff;
+      border-radius: 50px;
+      padding: 12px 18px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(26,79,180,.35), 0 0 0 6px rgba(143,196,255,.25);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .fab-acessibilidade:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(26,79,180,.40); }
+    .fab-acessibilidade:active { transform: scale(.96); }
+    .fab-acessibilidade:focus-visible { outline: 3px solid #ffd600; outline-offset: 3px; }
+    .fab-acessibilidade i { font-size: 1.4rem; }
+
+    /* =================== PAINEL DE ACESSIBILIDADE =================== */
+    .painel-acess-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      display: none;
+      z-index: 1200;
+      animation: fadeIn .25s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .painel-acess-overlay.aberto { display: block; }
+
+    .painel-acess {
+      position: fixed;
+      top: 0; right: 0;
+      height: 100%;
+      width: 290px;
+      max-width: 85%;
+      background: #fff;
+      box-shadow: -8px 0 30px rgba(0,0,0,.25);
+      padding: 1.4rem 1.2rem;
+      transform: translateX(100%);
+      transition: transform .3s ease;
+      z-index: 1250;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+    .painel-acess.aberto { transform: translateX(0); }
+
+    .painel-cabecalho {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 2px solid #edf2f7; padding-bottom: 12px; margin-bottom: 4px;
+    }
+    .painel-cabecalho h3 {
+      margin: 0; font-size: 1.25rem; color: #1a4fb4;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .painel-cabecalho h3 i { font-size: 1.4rem; }
+    .btn-fechar-painel {
+      background: #edf2f7; border: none; border-radius: 50%;
+      width: 42px; height: 42px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #2d3748; font-size: 1.3rem;
+    }
+    .btn-fechar-painel:focus-visible { outline: 3px solid #ffd600; outline-offset: 2px; }
+
+    .opcao-acess {
+      display: flex; align-items: center; gap: 14px;
+      width: 100%;
+      background: #f7faff;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0d47a1;
+      cursor: pointer;
+      text-align: left;
+      transition: all .2s ease;
+    }
+    .opcao-acess:hover { background: #fff; border-color: #1a4fb4; transform: translateX(-3px); }
+    .opcao-acess:active { transform: scale(.97); }
+    .opcao-acess:focus-visible { outline: 3px solid #ffd600; outline-offset: 2px; }
+    .opcao-acess i { font-size: 1.5rem; width: 28px; text-align: center; flex-shrink: 0; }
+
+    /* feedback visual quando está ouvindo */
+    .opcao-acess.ouvindo { background: #2e8b57 !important; color: #fff !important; border-color: #2e8b57 !important; }
+    .opcao-acess.ouvindo i { color: #fff !important; }
+
+    /* ===== CABEÇALHO ===== */
+    .cabecalho {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, #1a4fb4, #2f6fd6);
+      color: #fff;
+      text-align: center;
+      padding: 24px 20px 30px;
+      border-radius: 0 0 32px 32px;
+      box-shadow: 0 8px 24px rgba(26,79,180,0.30);
+      overflow: hidden;
+    }
+    .cabecalho::before,
+    .cabecalho::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+    }
+    .cabecalho::before { top: -60px; right: -60px; width: 180px; height: 180px; }
+    .cabecalho::after  { bottom: -50px; left: -50px; width: 140px; height: 140px; }
+
+    .cabecalho > * { position: relative; z-index: 1; }
+
+    .cabecalho h1 {
+      font-size: 34px;
+      margin: 4px 0 8px;
+      font-weight: 800;
+      letter-spacing: .5px;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+    .subtitulo { font-size: 18px; margin: 0; opacity: .95; font-weight: 500; }
+
+    .logo-img {
+      width: 130px; height: 130px;
+      min-height: 130px;            /* reserva o espaço: evita o "salto"/piscada */
+      border-radius: 28px;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      margin: 0 auto 14px;
+      border: 4px solid #fff;
+      box-shadow: 0 8px 24px rgba(0,0,0,.22), 0 0 0 8px rgba(255,255,255,.20);
+      background: #fff;
+      transition: transform .25s ease;
+    }
+
+    .logo-img:hover { transform: none; }
+
+    /* 🟢 Selo "Conectado" */
+    .status-conectado {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.20);
+      color: #fff; font-size: 16px; font-weight: 700;
+      padding: 6px 16px; border-radius: 999px; margin: 0 auto 10px;
+      backdrop-filter: blur(4px);
+    }
+    .status-conectado .fa-wifi { animation: piscar 1.5s infinite; }
+    @keyframes piscar { 0%,100%{opacity:1;} 50%{opacity:.35;} }
+
+    /* ===== BOTÃO VOLTAR (seta padronizada) ===== */
+    .btn-voltar {
+      display: inline-flex; align-items: center; gap: 8px;
+      align-self: flex-start;
+      background: rgba(255,255,255,0.2);
+      color: #fff; text-decoration: none;
+      font-size: 17px; font-weight: 700;
+      padding: 10px 16px; border-radius: 14px; margin-bottom: 20px;
+      transition: background .15s ease, transform .15s ease;
+    }
+    .btn-voltar:hover { background: rgba(255,255,255,0.35); transform: translateX(-2px); }
+    .btn-voltar:active { transform: scale(.96); }
+    .btn-voltar:focus-visible { outline: 3px solid #ffd600; outline-offset: 3px; }
+    .btn-voltar i { font-size: 18px; line-height: 1; }
+
+    /* ===== CONTEÚDO ===== */
+    .conteudo { flex: 1; width: 100%; max-width: 540px; margin: 0 auto; padding: 28px 18px; }
+    .intro { text-align: center; font-size: 20px; font-weight: 600; margin-bottom: 22px; }
+
+    .nivel-titulo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 17px; font-weight: 800;
+      margin: 26px 4px 14px; text-transform: uppercase; letter-spacing: .5px;
+      grid-column: 1 / -1;
+    }
+    .nivel-titulo .bola { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+    .n-iniciante { color: #2e8b57; } .n-iniciante .bola { background: #2e8b57; }
+    .n-intermediario { color: #d9822b; } .n-intermediario .bola { background: #d9822b; }
+    .n-avancado { color: #c0392b; } .n-avancado .bola { background: #c0392b; }
+
+    /* ===== MENU ===== */
+    .menu { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+    .menu-item {
+      position: relative;
+      display: flex; align-items: center; gap: 18px;
+      background: #fff; color: #1a4fb4; text-decoration: none;
+      font-size: 21px; font-weight: 700;
+      padding: 18px 22px; border-radius: 18px;
+      border-left: 8px solid #1a4fb4;
+      box-shadow: 0 4px 14px rgba(0,0,0,.08);
+      overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease;
+      opacity: 0;
+      animation: surgir .5s ease forwards;
+    }
+    @keyframes surgir {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .menu-item:nth-of-type(1){ animation-delay:.05s; }
+    .menu-item:nth-of-type(2){ animation-delay:.12s; }
+    .menu-item:nth-of-type(3){ animation-delay:.19s; }
+    .menu-item:nth-of-type(4){ animation-delay:.26s; }
+    .menu-item:nth-of-type(5){ animation-delay:.33s; }
+    .menu-item:nth-of-type(6){ animation-delay:.40s; }
+
+    .menu-item:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(26,79,180,.22); }
+    .menu-item:active { transform: scale(.98); }
+    .menu-item:focus-visible { outline: 3px solid #1a4fb4; outline-offset: 3px; }
+
+    /* ícone em círculo colorido */
+    .menu-item .icone {
+      display: flex; align-items: center; justify-content: center;
+      width: 56px; height: 56px; min-width: 56px;
+      border-radius: 16px;
+      font-size: 26px; line-height: 1;
+    }
+
+    .b-verde   .icone { background: rgba(46,139,87,.12);  color: #2e8b57; }
+    .b-laranja .icone { background: rgba(217,130,43,.14); color: #d9822b; }
+    .b-vermelho .icone { background: rgba(192,57,43,.12); color: #c0392b; }
+
+    .menu-item .ir {
+      margin-left: auto; font-size: 18px; opacity: .35;
+      transition: transform .18s ease, opacity .18s ease;
+    }
+    .menu-item:hover .ir { transform: translateX(4px); opacity: .8; }
+
+    .titulo-item { display: flex; flex-direction: column; line-height: 1.2; }
+
+    .tag {
+      font-size: 11px; font-weight: 800;
+      padding: 4px 11px; border-radius: 20px; color: #fff;
+      text-transform: uppercase; letter-spacing: .5px; white-space: nowrap;
+      margin-top: 4px; align-self: flex-start;
+    }
+    .tag-1 { background: #2e8b57; }
+    .tag-2 { background: #d9822b; }
+    .tag-3 { background: #c0392b; }
+
+    .b-verde   { border-left-color: #2e8b57; color: #2e8b57; }
+    .b-laranja { border-left-color: #d9822b; color: #b5651a; }
+    .b-vermelho{ border-left-color: #c0392b; color: #c0392b; }
+
+    .rodape { text-align: center; padding: 24px 20px; color: #718096; font-size: 16px; }
+
+    /* ===== 💻 PC / TABLET ===== */
+    @media (min-width: 700px) {
+      .conteudo { max-width: 900px; }
+      .menu { grid-template-columns: 1fr 1fr; }
+      .cabecalho h1 { font-size: 40px; }
+      .subtitulo { font-size: 20px; }
+      .intro { font-size: 24px; }
+    }
+
+    /* ===== 📱 CELULAR PEQUENO ===== */
+    @media (max-width: 380px) {
+      .cabecalho h1 { font-size: 24px; }
+      .menu-item { font-size: 17px; padding: 14px; gap: 12px; }
+      .menu-item .icone { width: 46px; height: 46px; min-width: 46px; font-size: 24px; }
+      .btn-voltar { font-size: 14px; padding: 8px 12px; }
+    }
+    @media (max-width: 480px) {
+      .fab-acessibilidade { padding: 10px 14px; font-size: .92rem; top: 12px; right: 12px; }
+      .fab-acessibilidade i { font-size: 1.25rem; }
+    }
+
+    /* ===== 🌗 ALTO CONTRASTE ===== */
+    body.alto-contraste { background: #000 !important; }
+    body.alto-contraste .cabecalho { background: #000 !important; box-shadow: none; }
+    body.alto-contraste .intro,
+    body.alto-contraste .subtitulo,
+    body.alto-contraste .rodape,
+    body.alto-contraste .nivel-titulo { color: #ffd600 !important; }
+    body.alto-contraste .menu-item {
+      background: #000 !important;
+      color: #ffd600 !important;
+      border-left-color: #ffd600 !important;
+      border: 2px solid #ffd600 !important;
+    }
+    body.alto-contraste .menu-item .icone { background: #ffd600 !important; color: #000 !important; }
+    body.alto-contraste .menu-item .icone i { color: #000 !important; }
+    body.alto-contraste .tag { background: #ffd600 !important; color: #000 !important; }
+
+    /* botão flutuante + painel no contraste */
+    body.alto-contraste .fab-acessibilidade { background: #000 !important; color: #ffd600 !important; border-color: #ffd600 !important; box-shadow: none !important; }
+    body.alto-contraste .fab-acessibilidade i { color: #ffd600 !important; }
+    body.alto-contraste .painel-acess { background: #000 !important; border-left: 2px solid #ffd600; }
+    body.alto-contraste .painel-cabecalho { border-bottom-color: #ffd600 !important; }
+    body.alto-contraste .painel-cabecalho h3, body.alto-contraste .painel-cabecalho h3 i { color: #ffd600 !important; }
+    body.alto-contraste .btn-fechar-painel { background: #111 !important; color: #ffd600 !important; border: 2px solid #ffd600; }
+    body.alto-contraste .opcao-acess { background: #111 !important; color: #ffd600 !important; border-color: #ffd600 !important; }
+    body.alto-contraste .opcao-acess i { color: #ffd600 !important; }
+    body.alto-contraste .opcao-acess.ouvindo { background: #ffd600 !important; color: #000 !important; }
+    body.alto-contraste .opcao-acess.ouvindo i { color: #000 !important; }
+
+    /* ===== 📏 NÍVEIS DE FONTE ===== */
+    body.fonte-1 { font-size: 112%; }
+    body.fonte-2 { font-size: 125%; }
+    body.fonte-3 { font-size: 140%; }
+
+    body.fonte-1 .cabecalho h1 { font-size: 40px; }
+    body.fonte-2 .cabecalho h1 { font-size: 46px; }
+    body.fonte-3 .cabecalho h1 { font-size: 52px; }
+
+    body.fonte-1 .subtitulo, body.fonte-1 .intro { font-size: 22px; }
+    body.fonte-2 .subtitulo, body.fonte-2 .intro { font-size: 25px; }
+    body.fonte-3 .subtitulo, body.fonte-3 .intro { font-size: 28px; }
+
+    body.fonte-1 .menu-item { font-size: 23px; }
+    body.fonte-2 .menu-item { font-size: 26px; }
+    body.fonte-3 .menu-item { font-size: 30px; }
+
+    body.fonte-1 .menu-item .icone,
+    body.fonte-2 .menu-item .icone,
+    body.fonte-3 .menu-item .icone { font-size: 30px; }
+
+    body, .cabecalho h1, .subtitulo, .intro, .menu-item {
+      transition: font-size .2s ease;
+    }
+
+    /* ===== Respeita quem prefere menos animação (acessibilidade + evita travar) ===== */
+    @media (prefers-reduced-motion: reduce) {
+      .menu-item { animation: none; opacity: 1; }
+      .status-conectado .fa-wifi { animation: none; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Pular para o conteúdo (acessibilidade) -->
+  <a href="#conteudoPrincipal" class="skip-link">Pular para o conteúdo</a>
+
+  <!-- ===== BOTÃO FLUTUANTE ÚNICO DE ACESSIBILIDADE ===== -->
+  <button class="fab-acessibilidade" id="fabAcess" onclick="abrirPainelAcess()"
+          aria-label="Abrir opções de acessibilidade" aria-expanded="false" aria-controls="painelAcess">
+    <i class="fa-solid fa-universal-access" aria-hidden="true"></i>
+    Acessibilidade
+  </button>
+
+  <!-- ===== PAINEL LATERAL DE ACESSIBILIDADE ===== -->
+  <div class="painel-acess-overlay" id="painelOverlay" onclick="fecharPainelAcess()"></div>
+  <aside class="painel-acess" id="painelAcess" role="dialog" aria-modal="true" aria-label="Opções de acessibilidade">
+    <div class="painel-cabecalho">
+      <h3><i class="fa-solid fa-universal-access" aria-hidden="true"></i> Acessibilidade</h3>
+      <button class="btn-fechar-painel" onclick="fecharPainelAcess()" aria-label="Fechar">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <button class="opcao-acess" onclick="aumentarFonte()">
+      <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Letra maior
+    </button>
+    <button class="opcao-acess" onclick="diminuirFonte()">
+      <i class="fa-solid fa-magnifying-glass-minus" aria-hidden="true"></i> Letra menor
+    </button>
+    <button class="opcao-acess" onclick="alternarContraste()">
+      <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i> Contraste
+    </button>
+    <button class="opcao-acess" id="btnOuvir" onclick="lerPagina()">
+      <i class="fa-solid fa-volume-high" aria-hidden="true"></i> Ouvir a tela
+    </button>
+    <button class="opcao-acess" onclick="resetarTudo()">
+      <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Tamanho normal
+    </button>
+  </aside>
+
+  <!-- ===== TOPO ===== -->
+  <header class="cabecalho cabecalho-home">
+    <a class="btn-voltar" href="index.html">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Voltar
+    </a>
+
+    <img src="icons/192.png" alt="Logo Idoso Conectado" class="logo-img"
+         width="130" height="130" fetchpriority="high" decoding="async">
+
+    <div class="status-conectado">
+      <i class="fa-solid fa-wifi" aria-hidden="true"></i> online
+    </div>
+
+    <h1>Idosos Conectados</h1>
+    <p class="subtitulo">Aprenda a usar o celular com confiança</p>
+  </header>
+
+  <!-- ===== MENU ===== -->
+  <main class="conteudo" id="conteudoPrincipal">
+
+    <p class="intro">Aprenda no seu ritmo!</p>
+
+    <nav class="menu" aria-label="Módulos de aprendizado">
+
+      <!-- 🟢 INICIANTE -->
+      <h2 class="nivel-titulo n-iniciante">
+        <span class="bola" aria-hidden="true"></span> Para começar
+      </h2>
+
+      <a class="menu-item b-verde" href="paginas/celular.html">
+        <span class="icone"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></span>
+        <span class="titulo-item">Conhecendo o Celular <span class="tag tag-1">Básico</span></span>
+        <i class="fa-solid fa-chevron-right ir" aria-hidden="true"></i>
+      </a>
+
+      <a class="menu-item b-verde" href="paginas/whatsapp.html">
+        <span class="icone"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></span>
+        <span class="titulo-item">WhatsApp <span class="tag tag-1">Básico</span></span>
+        <i class="fa-solid fa-chevron-right ir" aria-hidden="true"></i>
+      </a>
+
+      <!-- 🟡 INTERMEDIÁRIO -->
+      <h2 class="nivel-titulo n-intermediario">
+        <span class="bola" aria-hidden="true"></span> Para sua segurança
+      </h2>
+
+      <a class="menu-item b-laranja" href="paginas/pix.html">
+        <span class="icone"><i class="fa-solid fa-money-bill-transfer" aria-hidden="true"></i></span>
+        <span class="titulo-item">Fazer um PIX <span class="tag tag-2">Importante</span></span>
+        <i class="fa-solid fa-chevron-right ir" aria-hidden="true"></i>
+      </a>
+
+      <a class="menu-item b-laranja" href="paginas/seguranca.html">
+        <span class="icone"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+        <span class="titulo-item">Segurança <span class="tag tag-2">Importante</span></span>
+        <i class="fa-solid fa-chevron-right ir" aria-hidden="true"></i>
+      </a>
+
+      <!-- 🔴 AVANÇADO -->
+      <h2 class="nivel-titulo n-avancado">
+        <span class="bola" aria-hidden="true"></span> Para se proteger
+      </h2>
+
+      <a class="menu-item b-vermelho" href="paginas/golpe.html">
+        <span class="icone"><i class="fa-solid fa-user-secret" aria-hidden="true"></i></span>
+        <span class="titulo-item">É Golpe? <span class="tag tag-3">Atenção</span></span>
+        <i class="fa-solid fa-chevron-right ir" aria-hidden="true"></i>
+      </a>
+
+      <a class="menu-item b-vermelho" href="paginas/ia.html">
+        <span class="icone"><i class="fa-solid fa-robot" aria-hidden="true"></i></span>
+        <span class="titulo-item">IA e Fake News <span class="tag tag-3">Atenção</span></span>
+        <i class="fa-solid fa-chevron-right ir" aria-hidden="true"></i>
+      </a>
+
+    </nav>
+
+    <p class="rodape">💙 Feito com carinho para você</p>
+  </main>
+
+  <script>
+
+    /* ===== Verifica se o celular tem leitura em voz ===== */
+    const temVoz = ('speechSynthesis' in window);
+
+    /* ===== PAINEL DE ACESSIBILIDADE ===== */
+    function abrirPainelAcess() {
+      document.getElementById("painelAcess").classList.add("aberto");
+      document.getElementById("painelOverlay").classList.add("aberto");
+      document.getElementById("fabAcess").setAttribute("aria-expanded", "true");
+      document.querySelector("#painelAcess .btn-fechar-painel").focus();
+    }
+    function fecharPainelAcess() {
+      document.getElementById("painelAcess").classList.remove("aberto");
+      document.getElementById("painelOverlay").classList.remove("aberto");
+      const fab = document.getElementById("fabAcess");
+      fab.setAttribute("aria-expanded", "false");
+      fab.focus();
+    }
+
+    /* ===== LETRA MAIOR ===== */
+    function aumentarFonte() {
+      const body = document.body;
+      if (body.classList.contains("fonte-3")) {
+        return;
+      } else if (body.classList.contains("fonte-2")) {
+        body.classList.remove("fonte-2"); body.classList.add("fonte-3");
+      } else if (body.classList.contains("fonte-1")) {
+        body.classList.remove("fonte-1"); body.classList.add("fonte-2");
+      } else {
+        body.classList.add("fonte-1");
+      }
+      salvarEstado();
+    }
+
+    /* ===== LETRA MENOR ===== */
+    function diminuirFonte() {
+      const body = document.body;
+      if (body.classList.contains("fonte-3")) {
+        body.classList.remove("fonte-3"); body.classList.add("fonte-2");
+      } else if (body.classList.contains("fonte-2")) {
+        body.classList.remove("fonte-2"); body.classList.add("fonte-1");
+      } else if (body.classList.contains("fonte-1")) {
+        body.classList.remove("fonte-1");
+      }
+      salvarEstado();
+    }
+
+    /* ===== NORMAL ===== */
+    function resetarTudo() {
+      document.body.classList.remove("fonte-1", "fonte-2", "fonte-3", "alto-contraste");
+      if (temVoz) speechSynthesis.cancel();
+      document.querySelectorAll(".opcao-acess.ouvindo").forEach(b => b.classList.remove("ouvindo"));
+      localStorage.removeItem("estado");
+    }
+
+    /* ===== GUARDAR/LEMBRAR ===== */
+    function salvarEstado() {
+      const classes = [];
+      ["fonte-1","fonte-2","fonte-3","alto-contraste"].forEach(c => {
+        if (document.body.classList.contains(c)) classes.push(c);
+      });
+      localStorage.setItem("estado", JSON.stringify(classes));
+    }
+
+    /* ===== CONTRASTE ===== */
+    function alternarContraste() {
+      document.body.classList.toggle("alto-contraste");
+      salvarEstado();
+    }
+
+    /* ===== OUVIR (com feedback visual) ===== */
+    function lerPagina() {
+      const btnOuvir = document.getElementById("btnOuvir");
+
+      if (!temVoz) {
+        alert("Seu celular não tem leitura em voz. Mas você pode ler tudo na tela. 💙");
+        return;
+      }
+
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        if (btnOuvir) btnOuvir.classList.remove("ouvindo");
+        return;
+      }
+
+      const titulo    = document.querySelector("h1")?.innerText || "";
+      const subtitulo = document.querySelector(".subtitulo")?.innerText || "";
+      const intro     = document.querySelector(".intro")?.innerText || "";
+
+      let menu = "As opções para aprender são: ";
+      document.querySelectorAll(".titulo-item").forEach(item => {
+        const texto = item.childNodes[0]?.textContent?.trim() || item.innerText;
+        menu += texto + ". ";
+      });
+
+      const textoLimpo = `${titulo}. ${subtitulo}. ${intro}. ${menu}`
+        .replace(/\s+/g, " ").trim();
+
+      const fala = new SpeechSynthesisUtterance(textoLimpo);
+      fala.lang = "pt-BR";
+      fala.rate = 0.95;
+      fala.pitch = 1.05;
+      fala.volume = 1;
+
+      const vozes = speechSynthesis.getVoices();
+      const vozBoa =
+        vozes.find(v => v.lang === "pt-BR" && /natural|google|luciana|microsoft/i.test(v.name)) ||
+        vozes.find(v => v.lang === "pt-BR") ||
+        vozes.find(v => v.lang.startsWith("pt"));
+      if (vozBoa) fala.voice = vozBoa;
+
+      if (btnOuvir) btnOuvir.classList.add("ouvindo");
+      fala.onend = () => { if (btnOuvir) btnOuvir.classList.remove("ouvindo"); };
+
+      speechSynthesis.speak(fala);
+    }
+
+    if (temVoz) {
+      speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+    }
+
+    /* ===== TECLA ESC FECHA O PAINEL ===== */
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") fecharPainelAcess();
+    });
+
+    /* ===== Cancela a voz ao sair (evita travamento no app) ===== */
+    window.addEventListener("beforeunload", () => {
+      if (temVoz) speechSynthesis.cancel();
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const salvo = localStorage.getItem("estado");
+      if (salvo) {
+        try { JSON.parse(salvo).forEach(c => document.body.classList.add(c)); }
+        catch (err) { localStorage.removeItem("estado"); }
+      }
+    });
+  </script>
+
+</body>
+</html>

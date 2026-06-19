@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  
+  <!-- ===== FAVICON (logo na aba) ===== -->
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/favicon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../icons/favicon.png">
+<link rel="shortcut icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/favicon.png">
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>É Golpe? - Idosos Conectados</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Arial,sans-serif;font-size:18px;line-height:1.6;
+       color:#222;background:#eef2f5;}
+
+  /* ===== ÍCONES SVG ===== */
+  .ico{display:inline-flex;vertical-align:middle;width:1em;height:1em;}
+  .ico svg{width:100%;height:100%;display:block;}
+
+  /* TOPO */
+  header{background:#c62828;color:#fff;padding:16px;
+          display:flex;align-items:center;gap:14px;}
+  header h1{font-size:24px;display:flex;align-items:center;gap:10px;}
+  .btn-voltar{background:#fff;color:#c62828;text-decoration:none;
+              font-weight:bold;padding:10px 18px;border-radius:25px;flex-shrink:0;
+              display:inline-flex;align-items:center;gap:6px;}
+
+  /* CONTEÚDO */
+  main{max-width:600px;margin:0 auto;padding:24px 16px;}
+  .intro{font-size:20px;margin-bottom:20px;text-align:center;}
+
+  /* ===== BOTÃO OUVIR (redondo, só ícone) ===== */
+  .btn-ouvir{
+    background:#ffebee;color:#c62828;border:2px solid #ef9a9a;
+    border-radius:50%;width:50px;height:50px;padding:0;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:transform .12s;overflow:hidden;font-size:0;line-height:0;flex-shrink:0;
+  }
+  .btn-ouvir .ico{width:24px;height:24px;font-size:24px;flex-shrink:0;}
+  .btn-ouvir:active{transform:scale(.96);}
+  .btn-ouvir:focus-visible{outline:3px solid #c62828;outline-offset:2px;}
+  .btn-ouvir.falando{background:#c62828;color:#fff;border-color:#fff;}
+  .intro .btn-ouvir{margin-top:8px;}
+
+  /* DICAS (explicações) */
+  h2.secao{font-size:23px;color:#c62828;margin:28px 0 14px;
+           border-bottom:3px solid #ef5350;padding-bottom:6px;
+           display:flex;align-items:center;gap:10px;}
+  .dica{background:#fff;border-radius:14px;padding:18px;margin-bottom:16px;
+        box-shadow:0 3px 8px rgba(0,0,0,0.1);display:flex;gap:14px;align-items:flex-start;}
+  .dica .icone{flex-shrink:0;width:48px;height:48px;border-radius:12px;
+        background:#ffebee;color:#c62828;display:flex;align-items:center;justify-content:center;}
+  .dica .icone .ico{width:28px;height:28px;}
+
+  /* ===== Ouvir no canto dos cards .dica ===== */
+  .dica > div{position:relative;flex:1;min-width:0;padding-right:58px;}
+  .dica h3{font-size:19px;color:#c62828;margin-bottom:4px;padding-right:0;}
+  .dica .btn-ouvir{position:absolute;top:-2px;right:0;margin-top:0 !important;}
+
+  .lista-sinais{list-style:none;margin-top:8px;display:flex;
+                flex-direction:column;gap:10px;}
+  .lista-sinais li{display:flex;align-items:flex-start;gap:10px;font-size:17px;}
+  .sinal{background:#ffebee;color:#c62828;border-radius:10px;padding:7px;
+         display:inline-flex;flex-shrink:0;}
+  .sinal .ico{width:22px;height:22px;}
+
+  .aviso{margin-top:12px;background:#e8f5e9;border-left:5px solid #2e7d32;
+         padding:12px 14px;border-radius:8px;font-size:16px;color:#1b5e20;
+         display:flex;align-items:flex-start;gap:10px;line-height:1.5;}
+  .aviso .ico{width:22px;height:22px;color:#f9a825;flex-shrink:0;margin-top:2px;}
+  .aviso > span:not(.ico){flex:1;margin:0;text-align:left;}
+
+  /* PROGRESSO */
+  .progresso{text-align:center;font-weight:bold;color:#c62828;
+             font-size:18px;margin-bottom:16px;}
+
+  /* CARTÃO DA MENSAGEM */
+  .card{background:#fff;border-radius:14px;padding:20px;
+        box-shadow:0 3px 8px rgba(0,0,0,0.12);margin-bottom:20px;}
+  .card .titulo-msg{font-weight:bold;color:#555;margin-bottom:10px;
+                    display:flex;align-items:center;gap:8px;}
+  .card .titulo-msg .ico{width:22px;height:22px;color:#c62828;}
+  .mensagem{background:#f1f1f1;border-left:6px solid #999;
+            padding:16px;border-radius:8px;font-size:19px;}
+  .linha-ouvir{display:flex;justify-content:center;margin-top:14px;}
+
+  /* BOTÕES */
+  .botoes{display:flex;gap:14px;margin-top:20px;}
+  .btn{flex:1;font-size:20px;font-weight:bold;padding:18px;
+       border:none;border-radius:14px;cursor:pointer;color:#fff;
+       display:flex;align-items:center;justify-content:center;gap:8px;}
+  .btn .ico{width:24px;height:24px;}
+  .btn-golpe{background:#c62828;}
+  .btn-seguro{background:#2e7d32;}
+  .btn:active{transform:scale(0.96);}
+  .btn:disabled{opacity:0.5;}
+
+  /* FEEDBACK */
+  .feedback{margin-top:18px;padding:16px;border-radius:12px;
+            font-size:18px;font-weight:bold;display:none;}
+  .acertou{background:#e8f5e9;border:2px solid #2e7d32;color:#2e7d32;}
+  .errou{background:#ffebee;border:2px solid #c62828;color:#c62828;}
+  .btn-proximo{display:none;width:100%;margin-top:16px;
+               background:#1565c0;color:#fff;font-size:20px;
+               font-weight:bold;padding:16px;border:none;
+               border-radius:14px;cursor:pointer;}
+
+  /* RESULTADO FINAL */
+  .resultado{display:none;background:#fff;border-radius:16px;
+             padding:30px 20px;text-align:center;
+             box-shadow:0 3px 10px rgba(0,0,0,0.15);}
+  .nota{font-size:44px;font-weight:bold;color:#2e7d32;margin:10px 0;}
+  .barra-fundo{background:#e0e0e0;border-radius:20px;height:28px;
+               overflow:hidden;margin:18px 0;}
+  .barra-cheia{background:#2e7d32;height:100%;width:0;
+               transition:width 0.8s;border-radius:20px;}
+
+  /* RODAPÉ */
+  footer{text-align:center;padding:30px 16px;}
+  .btn-inicio{display:inline-flex;align-items:center;gap:8px;background:#1565c0;color:#fff;
+              text-decoration:none;font-size:20px;font-weight:bold;
+              padding:16px 28px;border-radius:30px;}
+
+  /* ===== ACESSIBILIDADE: REDUZIR MOVIMENTO ===== */
+  @media (prefers-reduced-motion: reduce){
+    .btn-ouvir.falando,.dica:hover{animation:none;transform:none;}
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ===== SVG ÍCONES ===== -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-detective" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3a4 4 0 0 1 4 4 4 4 0 0 1-8 0 4 4 0 0 1 4-4zm0 10c4.4 0 8 1.8 8 4v3H4v-3c0-2.2 3.6-4 8-4zm0 2c-2.7 0-4.8.8-5.7 1.7L6 17h12l-.3-1.3C16.8 15.8 14.7 15 12 15z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1c2.9.9 5 3.5 5 6.7s-2.1 5.8-5 6.7v2.1c4-1 7-4.6 7-8.8s-3-7.9-7-8.8z"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 1 21h22L12 2zm0 6 6.5 11h-13L12 8zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3zm0 10a2 2 0 0 1 1 3.7V19h-2v-1.3A2 2 0 0 1 12 14z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 11h-5v-2h3V7h2v6z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1l-2.24 2.2z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 7L4 6.5V8l8 4.5L20 8V6.5L12 11z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M11 18l-6-6 6-6"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path fill="currentColor" d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></symbol>
+</svg>
+
+<header>
+  <a href="../modulos.html" class="btn-voltar"><span class="ico"><svg><use href="#i-back"/></svg></span> Voltar</a>
+  <h1><span class="ico"><svg><use href="#i-detective"/></svg></span> É Golpe?</h1>
+</header>
+
+<main>
+
+
+  <!-- ===== PARTE 1: COMO RECONHECER GOLPES ===== -->
+  <h2 class="secao"><span class="ico"><svg><use href="#i-shield"/></svg></span> Como reconhecer um golpe</h2>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-warning"/></svg></span></span>
+    <div>
+      <h3>Os sinais de um golpe</h3>
+      <button class="btn-ouvir" aria-label="Ouvir os sinais de um golpe" onclick="ouvir(this, 'Os sinais de um golpe. Fique atento a estes sinais. Primeiro: pressa e urgência, eles dizem que você precisa agir agora, em 24 horas, ou vai perder algo. Segundo: prêmios que você não pediu, ninguém dá dinheiro de graça. Terceiro: pedir senha ou clicar em link estranho. Quarto: parente pedindo dinheiro de número desconhecido. Se aparecer qualquer um desses sinais, desconfie!')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <ul class="lista-sinais">
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-clock"/></svg></span></span> <span><strong>Pressa e urgência:</strong> "aja agora", "em 24h" — golpe usa o medo</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-warning"/></svg></span></span> <span><strong>Prêmio que você não pediu:</strong> ninguém dá dinheiro de graça</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-lock"/></svg></span></span> <span><strong>Pede senha ou link estranho:</strong> banco NUNCA faz isso</span></li>
+        <li><span class="sinal"><span class="ico"><svg><use href="#i-phone"/></svg></span></span> <span><strong>"Parente" em número novo:</strong> sempre ligue para confirmar</span></li>
+      </ul>
+      <div class="aviso"><span class="ico"><svg><use href="#i-bulb"/></svg></span><span>Na dúvida, não clique e não pague. Confirme por uma ligação antes!</span></div>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-lock"/></svg></span></span>
+    <div>
+      <h3>Proteja sua senha</h3>
+      <button class="btn-ouvir" aria-label="Ouvir sobre proteger sua senha" onclick="ouvir(this, 'Proteja sua senha. A sua senha é como a chave da sua casa. Nunca, jamais, diga sua senha para ninguém. Nem por telefone, nem por mensagem, nem por link. O banco de verdade nunca vai pedir sua senha. Se alguém pedir, é golpe na certa.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <p>Sua senha é como a <strong>chave da sua casa</strong>. <strong>Nunca</strong> diga para ninguém — nem por telefone, nem por mensagem, nem por link.</p>
+      <div class="aviso"><span class="ico"><svg><use href="#i-bulb"/></svg></span><span>O banco de verdade NUNCA pede sua senha. Se pedirem, é golpe!</span></div>
+    </div>
+  </div>
+
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-phone"/></svg></span></span>
+    <div>
+      <h3>O golpe do "falso parente"</h3>
+      <button class="btn-ouvir" aria-label="Ouvir sobre o golpe do falso parente" onclick="ouvir(this, 'O golpe do falso parente. É muito comum. Chega uma mensagem assim: Oi mãe, troquei de número, preciso de um PIX urgente. Mas não é seu filho! É um golpista. O que fazer? Ligue para o número antigo do seu parente e confirme. Nunca faça PIX por mensagem sem confirmar antes por uma ligação.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <p>Chega uma mensagem: <em>"Oi mãe, troquei de número, preciso de um PIX urgente"</em>. <strong>Não é seu filho — é um golpista!</strong></p>
+      <div class="aviso"><span class="ico"><svg><use href="#i-bulb"/></svg></span><span>Ligue para o número antigo e confirme. Nunca faça PIX sem confirmar por ligação!</span></div>
+    </div>
+  </div>
+
+  <!-- ===== PARTE 2: QUIZ ===== -->
+  <h2 class="secao"><span class="ico"><svg><use href="#i-detective"/></svg></span> Agora teste você!</h2>
+
+  <div id="quiz">
+    <p class="progresso" id="progresso">Pergunta 1 de 4</p>
+
+    <div class="card">
+      <p class="titulo-msg"><span class="ico"><svg><use href="#i-mail"/></svg></span> Você recebeu esta mensagem:</p>
+      <div class="mensagem" id="mensagem">...</div>
+
+      <div class="linha-ouvir">
+        <button class="btn-ouvir" id="btnOuvirMsg" aria-label="Ouvir a mensagem" onclick="ouvir(this, document.getElementById('mensagem').textContent)">
+          <span class="ico"><svg><use href="#i-sound"/></svg></span>
+        </button>
+      </div>
+
+      <div class="botoes" id="botoes">
+        <button class="btn btn-golpe"  onclick="responder(true)"><span class="ico"><svg><use href="#i-warning"/></svg></span> É GOLPE</button>
+        <button class="btn btn-seguro" onclick="responder(false)"><span class="ico"><svg><use href="#i-bulb"/></svg></span> É SEGURA</button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-proximo" id="btnProximo" onclick="proxima()">Próxima ➤</button>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="resultado" id="resultado">
+    <p style="font-size:22px;font-weight:bold;">🎉 Você terminou!</p>
+    <p class="nota" id="nota">0 / 4</p>
+    <div class="barra-fundo"><div class="barra-cheia" id="barra"></div></div>
+    <p id="mensagemFinal"></p>
+  </div>
+</main>
+
+<footer>
+  <a href="../modulos.html" class="btn-inicio"><span class="ico"><svg><use href="#i-home"/></svg></span> Voltar ao início</a>
+</footer>
+
+<script>
+  /* ===== LEITURA EM VOZ ALTA ===== */
+  let vozBR = null;
+  function carregarVoz(){
+    const vozes = speechSynthesis.getVoices();
+    vozBR = vozes.find(v=>v.lang==='pt-BR') || vozes.find(v=>v.lang.startsWith('pt')) || null;
+  }
+  carregarVoz();
+  if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=carregarVoz;
+
+  function limparEmojis(t){ return t.replace(/[^\wÀ-úçÇ\s,!?.:"]/g,''); }
+
+  function ouvir(botao, texto){
+    if(!('speechSynthesis' in window)){ alert('Seu aparelho não tem leitura de voz.'); return; }
+    if(speechSynthesis.speaking){
+      speechSynthesis.cancel();
+      document.querySelectorAll('.btn-ouvir.falando').forEach(b=>b.classList.remove('falando'));
+      return;
+    }
+    const fala = new SpeechSynthesisUtterance(limparEmojis(texto));
+    fala.lang='pt-BR'; if(vozBR) fala.voice=vozBR;
+    fala.rate=0.85; fala.pitch=1; fala.volume=1;
+    if(botao){ botao.classList.add('falando'); }
+    fala.onend=()=>{ if(botao){ botao.classList.remove('falando'); } };
+    speechSynthesis.speak(fala);
+  }
+
+  /* ===== PERGUNTAS DO QUIZ ===== */
+  const perguntas = [
+    {
+      texto: '"Parabéns! Você foi sorteado e ganhou R$ 5.000. Clique no link e informe sua senha do banco para receber."',
+      ehGolpe: true,
+      explica: 'É golpe! Banco nunca pede senha por link. Prêmio que você não participou é sempre golpe. 🚨'
+    },
+    {
+      texto: '"Oi mãe, troquei de número. Estou precisando de dinheiro urgente, faz um PIX nesse número novo agora."',
+      ehGolpe: true,
+      explica: 'É golpe! O golpe do "falso parente". Sempre ligue para o número antigo e confirme antes. 📞'
+    },
+    {
+      texto: '"Sua fatura do cartão fechou. Acesse o aplicativo oficial do seu banco para ver os detalhes."',
+      ehGolpe: false,
+      explica: 'É segura! Ela só pede para abrir o app oficial e NÃO pede senha nem link estranho. ✅'
+    },
+    {
+      texto: '"Seu CPF será cancelado em 24h! Pague uma taxa neste link para não perder seus benefícios."',
+      ehGolpe: true,
+      explica: 'É golpe! Eles usam o MEDO e a PRESSA ("24h"). Órgão público não cobra taxa por link. 🚨'
+    }
+  ];
+
+  let atual = 0;
+  let acertos = 0;
+
+  const elMsg   = document.getElementById('mensagem');
+  const elProg  = document.getElementById('progresso');
+  const elFeed  = document.getElementById('feedback');
+  const elBtns  = document.getElementById('botoes');
+  const elProx  = document.getElementById('btnProximo');
+
+  carregar();
+
+  function carregar() {
+    const p = perguntas[atual];
+    elMsg.textContent = p.texto;
+    elProg.textContent = 'Pergunta ' + (atual + 1) + ' de ' + perguntas.length;
+    elFeed.style.display = 'none';
+    elProx.style.display = 'none';
+    habilitarBotoes(true);
+  }
+
+  function responder(resposta) {
+    const p = perguntas[atual];
+    const acertou = (resposta === p.ehGolpe);
+    if (acertou) acertos++;
+
+    elFeed.style.display = 'block';
+    elFeed.className = 'feedback ' + (acertou ? 'acertou' : 'errou');
+    elFeed.textContent = (acertou ? '✅ Você acertou! ' : '❌ Quase! ') + p.explica;
+    ouvir(null, elFeed.textContent);
+
+    habilitarBotoes(false);
+    elProx.style.display = 'block';
+    elProx.textContent = (atual + 1 < perguntas.length) ? 'Próxima ➤' : 'Ver resultado 🎉';
+  }
+
+  function proxima() {
+    speechSynthesis.cancel();
+    atual++;
+    if (atual < perguntas.length) {
+      carregar();
+    } else {
+      finalizar();
+    }
+  }
+
+  function habilitarBotoes(estado) {
+    const botoes = elBtns.querySelectorAll('button');
+    botoes.forEach(b => b.disabled = !estado);
+  }
+
+  function finalizar() {
+    document.getElementById('quiz').style.display = 'none';
+    const res = document.getElementById('resultado');
+    res.style.display = 'block';
+
+    document.getElementById('nota').textContent = acertos + ' / ' + perguntas.length;
+
+    const pct = (acertos / perguntas.length) * 100;
+    setTimeout(() => { document.getElementById('barra').style.width = pct + '%'; }, 200);
+
+    let msg = '';
+    if (acertos === 4) msg = 'Perfeito! Você está esperto(a) contra golpes! 🛡️💚';
+    else if (acertos >= 2) msg = 'Muito bem! Com um pouco mais de atenção você fica craque! 😊';
+    else msg = 'Não desanime! O importante é desconfiar sempre. Tente de novo! 💪';
+    document.getElementById('mensagemFinal').textContent = msg;
+    ouvir(null, 'Você terminou! Sua nota foi ' + acertos + ' de ' + perguntas.length + '. ' + msg);
+
+    registrarDesempenho('golpe', acertos, perguntas.length);
+  }
+
+  /* ===== SALVA O DESEMPENHO PRO PAINEL DA FAMÍLIA ===== */
+  function registrarDesempenho(chave, acertos, total){
+    const dados = JSON.parse(localStorage.getItem('conectaIdoso_desempenho') || '{}');
+    dados[chave] = { acertos: acertos, total: total, data: new Date().toLocaleDateString('pt-BR') };
+    localStorage.setItem('conectaIdoso_desempenho', JSON.stringify(dados));
+  }
+</script>
+
+</body>
+</html>

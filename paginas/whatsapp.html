@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WhatsApp - Idosos Conectados</title>
+
+  <!-- ===== FAVICON (logo na aba) ===== -->
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/favicon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../icons/favicon.png">
+<link rel="shortcut icon" type="image/png" href="../icons/favicon.png">
+<link rel="apple-touch-icon" href="../icons/favicon.png">
+
+
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;font-size:18px;line-height:1.6;
+     color:#1f2a30;background:linear-gradient(180deg,#eef3f6 0%,#e2ebef 100%);}
+
+/* ===== ÍCONES SVG ===== */
+.ico{display:inline-flex;vertical-align:middle;width:1em;height:1em;}
+.ico svg{width:100%;height:100%;display:block;}
+
+header{background:linear-gradient(135deg,#075e54,#0a7d6f);color:#fff;
+       padding:18px 16px;display:flex;align-items:center;gap:14px;
+       box-shadow:0 4px 14px rgba(7,94,84,.3);position:sticky;top:0;z-index:30;}
+header h1{font-size:24px;display:flex;align-items:center;gap:10px;}
+.btn-voltar{background:#fff;color:#075e54;text-decoration:none;
+            font-weight:bold;padding:10px 18px;border-radius:25px;flex-shrink:0;
+            box-shadow:0 2px 6px rgba(0,0,0,.15);transition:transform .15s;}
+.btn-voltar:active{transform:scale(.95);}
+
+main{max-width:600px;margin:0 auto;padding:24px 16px;}
+.intro{font-size:20px;margin-bottom:20px;text-align:center;color:#37474f;}
+
+h2.secao{font-size:23px;color:#075e54;margin:32px 0 16px;
+         padding-bottom:8px;display:flex;align-items:center;gap:10px;
+         border-bottom:3px solid #25d366;}
+.dica{background:#fff;border-radius:18px;padding:20px;margin-bottom:18px;
+      box-shadow:0 6px 18px rgba(15,40,50,.08);display:flex;gap:16px;
+      align-items:flex-start;border:1px solid #eef2f4;transition:transform .2s, box-shadow .2s;}
+.dica:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(15,40,50,.12);}
+.dica .icone{flex-shrink:0;width:52px;height:52px;border-radius:14px;
+      background:#e8f9ef;color:#075e54;display:flex;align-items:center;
+      justify-content:center;}
+.dica .icone .ico{width:30px;height:30px;}
+.dica h3{font-size:19px;color:#075e54;margin-bottom:4px;}
+
+/* ===== BOTÃO OUVIR (só ícone, texto escondido) ===== */
+.btn-ouvir{
+  background:#e8f9ef;
+  color:#075e54;
+  border:2px solid #25d366;
+  border-radius:50%;
+  width:50px;height:50px;padding:0;
+  cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:transform .12s;
+  overflow:hidden;
+  font-size:0;
+  line-height:0;
+  flex-shrink:0;
+}
+.btn-ouvir .ico{
+  width:24px;height:24px;
+  font-size:24px;
+  flex-shrink:0;
+}
+.btn-ouvir:active{transform:scale(.96);}
+.btn-ouvir:focus-visible{outline:3px solid #0a7d6f;outline-offset:2px;}
+.btn-ouvir.falando{background:#25d366;color:#fff;border-color:#fff;}
+
+.btn-ouvir-alerta{background:#dfab6a;color:#075e54;border:2px solid #25d366;
+  border-radius:50%;width:50px;height:50px;padding:0;
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  transition:transform .12s;}
+
+/* ===== Foco visível geral (acessibilidade teclado) ===== */
+button:focus-visible,a:focus-visible,input:focus-visible{
+  outline:3px solid #0a7d6f;outline-offset:2px;}
+
+/* ===== Ouvir no CANTO dos cards .dica ===== */
+.dica{position:relative;padding-right:78px;}
+.dica > div{position:relative;}
+.dica .btn-ouvir{position:absolute;top:0;right:-62px;margin-top:0 !important;}
+
+/* ===== Ouvir no CANTO das instruções (FIXO no topo, não no meio) ===== */
+.instrucao{
+  position:relative;
+  padding:14px 70px 14px 14px;
+  font-size:16px;font-weight:bold;
+  color:#5d4037;text-align:center;border-top:2px solid #f0e6a0;
+  background:#fffdf2;
+}
+.instrucao .btn-ouvir{
+  position:absolute;
+  top:8px;right:12px;        /* FIXO no topo: não recalcula quando o texto cresce */
+  transform:none;
+  margin-top:0 !important;
+  width:46px;height:46px;
+}
+
+/* ===== Ouvir no CANTO dos balões recebidos (FIXO no topo) ===== */
+.balao.recebida{
+  position:relative;
+  padding-right:52px;
+}
+.balao.recebida .btn-ouvir{
+  position:absolute;
+  top:8px;
+  right:8px;                 /* FIXO no topo do balão */
+  transform:none;
+  margin-top:0 !important;
+  width:38px;height:38px;
+}
+.balao.recebida .btn-ouvir .ico{width:18px;height:18px;}
+.balao.recebida br{display:none;}
+
+/* ===== ALERTA com botão de áudio no canto (FIXO no topo) ===== */
+.alerta{background:#fff7ed;border-left:6px solid #ea7317;
+        padding:18px 70px 18px 18px;border-radius:14px;margin:20px 0;font-size:18px;
+        box-shadow:0 4px 12px rgba(234,115,23,.12);position:relative;}
+.alerta .btn-ouvir{
+  position:absolute;
+  top:14px;right:14px;       /* FIXO no topo */
+  transform:none;
+  margin-top:0 !important;
+}
+.alerta br{display:none;}
+
+.progresso{text-align:center;font-weight:bold;color:#075e54;
+           font-size:18px;margin-bottom:16px;}
+
+/* ===== CELULAR SIMULADO ===== */
+.celular{max-width:340px;margin:0 auto;background:linear-gradient(160deg,#1c1c1e,#000);
+         border-radius:40px;padding:14px;box-shadow:0 16px 40px rgba(0,0,0,.4),
+         inset 0 0 0 2px #2c2c2e;}
+.tela{position:relative;background:#e9e2db;border-radius:28px;overflow:hidden;
+      min-height:520px;display:flex;flex-direction:column;}
+.tela > .conversa{ min-height:0; }   /* deixa a conversa encolher */
+.tela > #areaAtividade{ flex-shrink:0; }  /* protege o campo de enviar */
+
+
+.whats-topo{background:linear-gradient(135deg,#075e54,#0a7d6f);color:#fff;
+            padding:14px;display:flex;align-items:center;gap:10px;}
+.whats-topo .foto{width:44px;height:44px;border-radius:50%;
+                  background:#25d366;display:flex;align-items:center;
+                  justify-content:center;font-size:22px;flex-shrink:0;
+                  box-shadow:0 2px 6px rgba(0,0,0,.2);}
+.whats-topo .nome{font-weight:bold;font-size:17px;}
+.whats-topo .status{font-size:13px;opacity:0.85;}
+
+.conversa{flex:1;padding:16px;display:flex;flex-direction:column;
+          gap:12px;overflow-y:auto;
+          background-image:radial-gradient(rgba(0,0,0,.03) 1px,transparent 0);
+          background-size:18px 18px;}
+.balao{max-width:80%;padding:11px 15px;border-radius:16px;
+       font-size:17px;line-height:1.4;box-shadow:0 2px 5px rgba(0,0,0,.12);}
+.recebida{background:#fff;align-self:flex-start;border-top-left-radius:4px;}
+.enviada{background:#dcf8c6;align-self:flex-end;border-top-right-radius:4px;}
+.hora{display:block;font-size:11px;color:#8a8a8a;text-align:right;margin-top:3px;}
+
+/* ===== TRACINHOS ===== */
+.tracos-grande{display:inline-flex;color:#8a8a8a;vertical-align:middle;}
+.tracos-grande .ico{width:20px;height:15px;}
+.tracos-grande.azul{color:#34b7f1;}
+
+.pergunta-box{background:#fffdf2;border-top:2px solid #f0e6a0;
+              padding:14px;font-size:16px;font-weight:bold;color:#5d4037;text-align:center;}
+
+.opcoes{padding:12px;display:flex;flex-direction:column;gap:10px;background:#f4f5f6;}
+.opc{background:#fff;border:2px solid #25d366;color:#075e54;
+     font-size:16px;font-weight:bold;padding:14px;border-radius:14px;
+     cursor:pointer;text-align:left;box-shadow:0 2px 6px rgba(0,0,0,.06);
+     transition:transform .12s;}
+.opc:active{transform:scale(0.97);}
+.opc.certa{background:#25d366;color:#fff;border-color:#25d366;}
+.opc.errada{background:#ffcdd2;color:#c62828;border-color:#c62828;}
+.opc:disabled{cursor:default;}
+
+.feedback{padding:15px;font-size:16px;font-weight:bold;display:none;text-align:center;}
+.acertou{background:#e8f5e9;color:#2e7d32;}
+.errou{background:#ffebee;color:#c62828;}
+
+.btn-proximo{display:none;width:calc(100% - 24px);margin:0 12px 14px;
+             background:linear-gradient(135deg,#075e54,#0a7d6f);color:#fff;
+             font-size:18px;font-weight:bold;padding:15px;border:none;
+             border-radius:14px;cursor:pointer;box-shadow:0 4px 12px rgba(7,94,84,.3);}
+.resultado{display:none;background:#fff;border-radius:20px;
+           padding:32px 22px;text-align:center;margin-top:20px;
+           box-shadow:0 8px 24px rgba(15,40,50,.12);}
+.nota{font-size:46px;font-weight:bold;color:#25d366;margin:10px 0;}
+.barra-fundo{background:#e8edf0;border-radius:20px;height:28px;
+             overflow:hidden;margin:18px 0;}
+.barra-cheia{background:linear-gradient(90deg,#25d366,#1faa53);height:100%;width:0;
+             transition:width 0.8s;border-radius:20px;}
+
+footer{text-align:center;padding:34px 16px;}
+.btn-inicio{display:inline-flex;align-items:center;gap:10px;
+            background:linear-gradient(135deg,#075e54,#0a7d6f);color:#fff;
+            text-decoration:none;font-size:20px;font-weight:bold;
+            padding:16px 30px;border-radius:30px;box-shadow:0 6px 18px rgba(7,94,84,.3);}
+.lista-tracos{list-style:none;margin-top:8px;display:flex;
+              flex-direction:column;gap:12px;}
+.lista-tracos li{display:flex;align-items:center;gap:12px;font-size:17px;}
+
+.traco{background:#eceff1;color:#667781;font-weight:bold;
+       padding:6px 8px;border-radius:8px;min-width:auto;display:inline-flex;
+       align-items:center;justify-content:center;flex-shrink:0;}
+.traco .ico{width:24px;height:18px;}
+.traco.azul{color:#34b7f1;background:#e3f4fb;}
+
+.passos-foto{list-style:none;margin-top:12px;display:flex;
+             flex-direction:column;gap:14px;}
+.passos-foto li{display:flex;align-items:center;gap:14px;
+                font-size:17px;line-height:1.4;}
+.num{background:linear-gradient(135deg,#25d366,#1faa53);color:#fff;
+     font-weight:bold;font-size:18px;width:38px;height:38px;border-radius:50%;
+     display:flex;align-items:center;justify-content:center;flex-shrink:0;
+     box-shadow:0 3px 8px rgba(37,211,102,.4);}
+.pontinhos{background:#075e54;color:#fff;font-weight:bold;
+           padding:3px 12px;border-radius:8px;display:inline-flex;
+           align-items:center;}
+.pontinhos .ico{width:16px;height:18px;}
+.aviso{margin-top:14px;background:#fff8e1;border-left:5px solid #ffb300;
+       padding:12px 14px;border-radius:8px;font-size:16px;color:#5d4037;
+       display:flex;align-items:flex-start;gap:8px;}
+.aviso .ico{width:20px;height:20px;flex-shrink:0;margin-top:2px;}
+.destaque{border:2px solid #25d366;box-shadow:0 8px 22px rgba(37,211,102,.22);}
+.selo{display:inline-flex;align-items:center;gap:6px;
+      background:linear-gradient(135deg,#25d366,#1faa53);
+      color:#fff;font-size:14px;font-weight:bold;padding:5px 14px;
+      border-radius:20px;margin-bottom:8px;box-shadow:0 2px 6px rgba(37,211,102,.4);}
+.selo .ico{width:16px;height:16px;}
+@keyframes pisca{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}
+
+/* ===== QUIZ INTERATIVO ===== */
+.campo-digitar{display:flex;gap:8px;padding:12px;background:#f4f5f6;align-items:center;}
+.campo-digitar input{flex:1;font-size:16px;padding:13px;border:2px solid #25d366;
+  border-radius:25px;outline:none;}
+.btn-enviar{background:linear-gradient(135deg,#25d366,#1faa53);color:#fff;border:none;
+  width:50px;height:50px;border-radius:50%;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 8px rgba(37,211,102,.4);}
+.btn-enviar .ico{width:22px;height:22px;}
+
+/* ===== FOTO GRANDE ===== */
+.foto-msg{width:120px;height:90px;background:linear-gradient(135deg,#ffe082,#ffca28);
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:48px;cursor:pointer;}
+.foto-grande{display:none;position:absolute;inset:0;background:rgba(0,0,0,.92);
+  flex-direction:column;z-index:20;}
+.foto-grande .topo-foto{display:flex;justify-content:flex-end;padding:12px;position:relative;z-index:22;}
+.foto-grande .pontos{background:rgba(255,255,255,.2);color:#fff;border:none;
+  width:42px;height:42px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;}
+.foto-grande .pontos .ico{width:20px;height:20px;}
+.foto-grande .imagem{flex:1;display:flex;align-items:center;justify-content:center;font-size:120px;}
+
+/* ===== MENU DOS 3 PONTINHOS NO CANTO (igual WhatsApp real) ===== */
+.menu-foto{display:none;position:absolute;top:58px;right:12px;
+  background:#fff;border-radius:12px;overflow:hidden;z-index:23;
+  box-shadow:0 6px 20px rgba(0,0,0,.4);min-width:170px;}
+.menu-foto button{width:100%;background:#fff;border:none;border-bottom:1px solid #eee;
+  padding:14px 18px;font-size:16px;font-weight:bold;color:#075e54;cursor:pointer;
+  display:flex;align-items:center;gap:10px;text-align:left;}
+.menu-foto button:last-child{border-bottom:none;}
+.menu-foto button:active{background:#e8f9ef;}
+.menu-foto button .ico{width:20px;height:20px;}
+
+/* ===== ÁUDIO ===== */
+.area-audio{display:flex;align-items:center;gap:12px;padding:16px;background:#f4f5f6;justify-content:center;}
+.btn-microfone{background:linear-gradient(135deg,#25d366,#1faa53);color:#fff;border:none;
+  width:72px;height:72px;border-radius:50%;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(37,211,102,.4);transition:transform .15s;
+  -webkit-user-select:none;user-select:none;touch-action:none;}
+.btn-microfone .ico{width:34px;height:34px;pointer-events:none;}
+.btn-microfone.gravando{transform:scale(1.2);background:#e53935;
+  box-shadow:0 0 0 8px rgba(229,57,53,.25);}
+.btn-microfone:disabled{background:#bdbdbd;}
+.gravando-info{display:none;color:#e53935;font-weight:bold;font-size:15px;text-align:center;}
+.gravando-info.ativo{display:block;}
+.ondas{display:inline-flex;gap:3px;align-items:flex-end;height:18px;margin-left:6px;}
+.ondas span{width:4px;background:#e53935;border-radius:2px;animation:onda .8s infinite;}
+.ondas span:nth-child(1){animation-delay:0s;}
+.ondas span:nth-child(2){animation-delay:.2s;}
+.ondas span:nth-child(3){animation-delay:.4s;}
+.ondas span:nth-child(4){animation-delay:.6s;}
+@keyframes onda{0%,100%{height:6px;}50%{height:18px;}}
+.solte-aviso{margin-top:6px;font-size:13px;color:#5d4037;}
+
+/* ===== COMO ESCREVER (teclado) ===== */
+.como-escrever{background:#e8f9ef;border:2px dashed #25d366;
+  border-radius:14px;padding:16px;margin:14px 0;}
+.como-escrever h4{color:#075e54;font-size:18px;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;}
+/* CAIXA DA DEMONSTRAÇÃO DO TECLADO */
+.demo-teclado{
+  border:2px dashed #25D366;
+  border-radius:16px;
+  padding:14px;
+  margin:12px 0;
+  background:#f0fff4;
+  width:100%;
+  box-sizing:border-box;   /* impede de estourar a tela */
+}
+.campo-mensagem{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px;
+}
+
+.input-msg{
+  flex:1;
+  font-size:18px;
+  padding:12px;
+  border:2px solid #ccc;
+  border-radius:24px;
+}
+
+.botao-enviar{
+  width:49px;
+  height:49px;
+  border:none;
+  border-radius:50%;
+  background:#25D366;     /* verde WhatsApp */
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.botao-enviar:active{
+  background:#1da851;     /* escurece ao tocar (feedback) */
+}
+
+.demo-teclado .titulo{
+  font-size:15px;
+  font-weight:bold;
+  color:#1f2a30;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+/* AS TECLAS — agora quebram linha e nunca estouram */
+.teclas{
+  display:flex;
+  flex-wrap:wrap;          /* AS TECLAS QUEBRAM DE LINHA NO CELULAR */
+  justify-content:center;
+  gap:6px;
+  background:#cfd6db;
+  padding:9px;
+  border-radius:12px;
+}
+
+.tecla{
+  flex:0 0 auto;
+  min-width:42px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  border-radius:8px;
+  font-size:18px;
+  font-weight:bold;
+  color:#222;
+  box-shadow:0 2px 0 #aab;
+  padding:0 8px;
+}
+
+.tecla.espaco{
+  flex:1 1 180px;      /* barra mais larga */
+  max-width:220px;     /* permite esticar mais */
+  background:#25D366;
+  color:#fff;
+  font-size:16px;      /* texto um pouco maior */
+}
+
+
+.demo-teclado .exemplo{
+  font-size:14px;
+  color:#333;
+  text-align:center;
+  margin-top:10px;
+}
+
+/* AJUSTE EXTRA PARA TELAS BEM PEQUENAS */
+@media (max-width:360px){
+  .tecla{ min-width:36px; height:42px; font-size:16px; }
+  .tecla.espaco{ font-size:13px; }
+  .demo-teclado .titulo{ font-size:15px; }
+}
+</style>
+</head>
+<body>
+<!-- ===== SVG ÍCONES (Material Icons oficiais) ===== -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="i-chat" viewBox="0 0 24 24"><path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><path fill="currentColor" d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><circle fill="currentColor" cx="12" cy="12" r="3.2"/><path fill="currentColor" d="M9 2 7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><path fill="currentColor" d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path fill="currentColor" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></symbol>
+  <symbol id="i-check2" viewBox="0 0 24 24"><path fill="currentColor" d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41 6 19l1.41-1.41L1.83 12 .41 13.41z"/></symbol>
+  <symbol id="i-check1" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><path fill="currentColor" d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path fill="currentColor" d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path fill="currentColor" d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></symbol>
+  <symbol id="i-tip" viewBox="0 0 24 24"><path fill="currentColor" d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></symbol>
+  <symbol id="i-touch" viewBox="0 0 24 24"><path fill="currentColor" d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></symbol>
+</svg>
+
+<header>
+  <a href="../modulos.html" class="btn-voltar" aria-label="Voltar para os módulos"><span class="ico"><svg><use href="#i-back"/></svg></span> Voltar</a>
+  <h1><span class="ico"><svg><use href="#i-chat"/></svg></span> WhatsApp</h1>
+</header>
+
+<main>
+  <!-- ===== PARTE 1: EXPLICAÇÕES ===== -->
+  <h2 class="secao"><span class="ico"><svg><use href="#i-chat"/></svg></span> O que você precisa saber</h2>
+
+  <!-- COMO ESCREVER -->
+<div class="dica">
+  <span class="icone"><span class="ico"><svg><use href="#i-keyboard"/></svg></span></span>
+  <div>
+    <h3>Como escrever uma mensagem (bem devagar)</h3>
+    <button type="button" class="btn-ouvir" aria-label="Ouvir explicação sobre como escrever uma mensagem" onclick="ouvir(this, 'Como escrever uma mensagem, bem devagar. Primeiro: toque na barrinha onde está escrito Digite aqui. O teclado vai aparecer na tela. Segundo: toque nas letras, uma de cada vez, para formar as palavras. Terceiro: para dar um espaço entre as palavras, toque na barra grande de baixo. Quarto: quando terminar de escrever, toque no botão verde para enviar a mensagem. Não tenha pressa! Se errar uma letra, toque no botão de apagar e tente de novo.')">
+      <span class="ico"><svg><use href="#i-sound"/></svg></span>
+    </button>
+    <ol class="passos-foto">
+      <li><span class="num">1</span><span>Toque na barrinha escrito <strong>"Digite aqui"</strong> — o teclado aparece</span></li>
+      <li><span class="num">2</span><span>Toque nas <strong>letras</strong>, uma de cada vez, para formar as palavras</span></li>
+      <li><span class="num">3</span><span>Para separar palavras, toque na <strong>barra grande</strong> de baixo (espaço)</span></li>
+      <li><span class="num">4</span><span>Terminou? Toque no <strong>botão verde</strong> de enviar!</span></li>
+    </ol>
+
+    <!-- UMA caixa só, UM título só -->
+    <div class="demo-teclado">
+      <div class="titulo"><span class="ico"><svg><use href="#i-keyboard"/></svg></span> Veja um exemplo:</div>
+      <div class="teclas">
+        <div class="tecla espaco">espaço</div>
+        <button class="botao-enviar" aria-label="Enviar mensagem">➤</button>
+      </div>
+    </div>
+
+    <p class="aviso"><span class="ico" style="color:#ffb300;"><svg><use href="#i-tip"/></svg></span> Não tenha pressa! Errou uma letra? Toque no apagar e tente de novo.</p>
+  </div>
+</div>
+
+
+  <!-- TIRAR FOTO E ENVIAR -->
+  <div class="dica destaque">
+    <span class="icone"><span class="ico"><svg><use href="#i-camera"/></svg></span></span>
+    <div>
+      <span class="selo"><span class="ico"><svg><use href="#i-camera"/></svg></span> Passo a passo</span>
+      <h3>Tirar uma foto e enviar para alguém</h3>
+      <button type="button" class="btn-ouvir" aria-label="Ouvir explicação sobre tirar e enviar foto" onclick="ouvir(this, 'Tirar uma foto e enviar para alguém. Primeiro: abra a conversa da pessoa para quem você quer mandar a foto. Segundo: toque no ícone de câmera ou de clipe, que fica ao lado de onde você escreve. Terceiro: toque no botão grande e redondo para tirar a foto. Quarto: se gostou da foto, toque no botão verde de enviar. Se não gostou, é só apagar e tirar outra. Pronto! A foto chega na hora para a pessoa.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <ol class="passos-foto">
+        <li><span class="num">1</span>
+          <span>Abra a <strong>conversa</strong> da pessoa para quem quer mandar a foto</span></li>
+        <li><span class="num">2</span>
+          <span>Toque no ícone de <span class="pontinhos"><span class="ico"><svg><use href="#i-camera"/></svg></span></span> <strong>câmera</strong>, do lado de onde se escreve</span></li>
+        <li><span class="num">3</span>
+          <span>Toque no <strong>botão grande e redondo</strong> para <strong>tirar a foto</strong></span></li>
+        <li><span class="num">4</span>
+          <span>Gostou? Toque no <strong>botão verde</strong> de enviar. A foto chega na hora!</span></li>
+      </ol>
+      <p class="aviso"><span class="ico" style="color:#ffb300;"><svg><use href="#i-tip"/></svg></span> Não gostou da foto? É só apagar e tirar outra. Pode repetir quantas vezes quiser!</p>
+    </div>
+  </div>
+
+  <!-- VER E GUARDAR FOTOS -->
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-image"/></svg></span></span>
+    <div>
+      <h3>Ver e guardar fotos que te enviam</h3>
+      <button type="button" class="btn-ouvir" aria-label="Ouvir explicação sobre ver e guardar fotos" onclick="ouvir(this, 'Ver e guardar fotos. Primeiro: toque em cima da foto para abrir ela bem grande. Segundo: toque nos três pontinhos no canto da tela. Terceiro: toque em Salvar para guardar a foto no celular.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <ol class="passos-foto">
+        <li><span class="num">1</span><span>Toque <strong>em cima da foto</strong> para abrir ela bem grande</span></li>
+        <li><span class="num">2</span><span>Toque nos <span class="pontinhos"><span class="ico"><svg><use href="#i-dots"/></svg></span></span> <strong>três pontinhos</strong> no canto da tela</span></li>
+        <li><span class="num">3</span><span>Toque em <strong>"Salvar"</strong> para guardar a foto no celular</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- VIDEOCHAMADA -->
+  <div class="dica destaque">
+    <span class="icone"><span class="ico"><svg><use href="#i-video"/></svg></span></span>
+    <div>
+      <span class="selo"><span class="ico"><svg><use href="#i-star"/></svg></span> Mais querida pela família!</span>
+      <h3>Fazer uma videochamada</h3>
+      <button type="button" class="btn-ouvir" aria-label="Ouvir explicação sobre videochamada" onclick="ouvir(this, 'Fazer uma videochamada. Veja o rosto dos seus filhos e netos enquanto conversa! Primeiro: abra a conversa da pessoa que você quer ver. Segundo: toque no ícone de câmera, no canto de cima. Terceiro: espere a pessoa atender e pronto, é só conversar! Quarto: para encerrar, toque no botão vermelho.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <ol class="passos-foto">
+        <li><span class="num">1</span><span>Abra a conversa da pessoa que você quer ver</span></li>
+        <li><span class="num">2</span><span>Toque no ícone de <span class="pontinhos"><span class="ico"><svg><use href="#i-video"/></svg></span></span> <strong>câmera</strong>, no canto de cima</span></li>
+        <li><span class="num">3</span><span><strong>Espere a pessoa atender</strong> e pronto, é só conversar!</span></li>
+        <li><span class="num">4</span><span>Para encerrar, toque no botão <strong>vermelho</strong></span></li>
+      </ol>
+      <p class="aviso"><span class="ico" style="color:#ffb300;"><svg><use href="#i-tip"/></svg></span> Use o Wi-Fi de casa para não gastar a internet do celular!</p>
+    </div>
+  </div>
+
+  <!-- ÁUDIO -->
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-mic"/></svg></span></span>
+    <div>
+      <h3>Mensagem de voz (áudio)</h3>
+      <button type="button" class="btn-ouvir" aria-label="Ouvir explicação sobre mensagem de voz" onclick="ouvir(this, 'Mensagem de voz, ou áudio. É ótimo para quem tem dificuldade de digitar! É só falar. Primeiro: segure o microfone com o dedo, não solte. Segundo: fale sua mensagem normalmente, sem pressa. Terceiro: solte o dedo para enviar na hora. Atenção: se soltar antes de falar, o áudio não é enviado. É só tentar de novo!')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <ol class="passos-foto">
+        <li><span class="num">1</span><span><strong>Segure o microfone</strong> com o dedo (não solte!)</span></li>
+        <li><span class="num">2</span><span><strong>Fale</strong> sua mensagem normalmente, sem pressa</span></li>
+        <li><span class="num">3</span><span><strong>Solte o dedo</strong> para enviar na hora</span></li>
+      </ol>
+      <p class="aviso"><span class="ico" style="color:#e53935;"><svg><use href="#i-warning"/></svg></span> Se soltar antes de falar, o áudio não é enviado. É só tentar de novo!</p>
+    </div>
+  </div>
+
+  <!-- TRACINHOS -->
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-check2"/></svg></span></span>
+    <div>
+      <h3>O que são os tracinhos</h3>
+      <button type="button" class="btn-ouvir" aria-label="Ouvir explicação sobre os tracinhos" onclick="ouvir(this, 'O que são os tracinhos. Um tracinho cinza quer dizer: mensagem enviada. Dois tracinhos cinzas: mensagem entregue. Dois tracinhos azuis: a pessoa já leu sua mensagem.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+      <ul class="lista-tracos">
+        <li><span class="traco"><span class="ico"><svg><use href="#i-check1"/></svg></span></span> <strong>Um tracinho cinza:</strong> mensagem enviada</li>
+        <li><span class="traco"><span class="ico"><svg><use href="#i-check2"/></svg></span></span> <strong>Dois tracinhos cinzas:</strong> mensagem entregue</li>
+        <li><span class="traco azul"><span class="ico"><svg><use href="#i-check2"/></svg></span></span> <strong>Dois tracinhos azuis:</strong> a pessoa já leu</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- GOLPES -->
+  <div class="dica">
+    <span class="icone"><span class="ico"><svg><use href="#i-shield"/></svg></span></span>
+    <div>
+      <h3>Cuidado com golpes</h3>
+      <p>Se um "parente" pedir dinheiro de um número estranho, desconfie! Ligue para a pessoa antes de pagar.</p>
+      <button type="button" class="btn-ouvir" aria-label="Ouvir aviso sobre golpes" onclick="ouvir(this, 'Cuidado com golpes. Se um parente pedir dinheiro de um número estranho, desconfie! Ligue para a pessoa antes de pagar.')">
+        <span class="ico"><svg><use href="#i-sound"/></svg></span>
+      </button>
+    </div>
+  </div>
+  <div class="alerta">
+    <strong><span class="ico"><svg><use href="#i-warning"/></svg></span> Atenção:</strong> Ninguém de verdade pede dinheiro com pressa. Sempre confirme por uma ligação antes de mandar PIX!
+    <button type="button" class="btn-ouvir" aria-label="Ouvir aviso" onclick="ouvir(this, 'Atenção! Ninguém de verdade pede dinheiro com pressa. Sempre confirme por uma ligação antes de mandar PIX!')">
+      <span class="ico"><svg><use href="#i-sound"/></svg></span>
+    </button>
+  </div>
+
+  <!-- PARTE 2: QUIZ -->
+  <h2 class="secao"><span class="ico"><svg><use href="#i-chat"/></svg></span> Pratique no WhatsApp!</h2>
+  <p class="progresso" id="progresso" aria-live="polite">Situação 1 de 5</p>
+  <div id="quiz">
+    <div class="celular">
+      <div class="tela">
+        <div class="whats-topo">
+          <div class="foto" id="foto">👤</div>
+          <div>
+            <div class="nome" id="contato">Contato</div>
+            <div class="status">online</div>
+          </div>
+        </div>
+        <div class="conversa" id="conversa"></div>
+        <div id="areaAtividade"></div>
+        <div class="feedback" id="feedback"></div>
+        <button type="button" class="btn-proximo" id="btnProximo" onclick="proxima()">Próxima ➤</button>
+      </div>
+    </div>
+  </div>
+  <div class="resultado" id="resultado">
+    <p style="font-size:22px;font-weight:bold;">Você terminou!</p>
+    <p class="nota" id="nota">0 / 5</p>
+    <div class="barra-fundo"><div class="barra-cheia" id="barra"></div></div>
+    <p id="mensagemFinal"></p>
+  </div>
+
+  <!-- PRÁTICA: VIDEOCHAMADA -->
+  <h2 class="secao"><span class="ico"><svg><use href="#i-video"/></svg></span> Agora pratique de verdade!</h2>
+  <p class="intro" style="text-align:center;">Toque na câmera e faça uma videochamada com seu neto. Sem medo, é só treino!</p>
+  <div class="celular">
+    <div class="tela" id="telaVideo">
+      <div class="whats-topo" id="cabecalhoVideo">
+        <div class="foto">🧒</div>
+        <div>
+          <div class="nome">Pedro (Neto)</div>
+          <div class="status">online</div>
+        </div>
+        <div style="margin-left:auto;">
+          <button type="button" id="btnCameraVideo" onclick="iniciarVideo()" aria-label="Iniciar videochamada com Pedro" style="background:none;border:none;color:#fff;cursor:pointer;border-radius:8px;padding:4px;animation:pisca 1.2s infinite;display:flex;" title="Videochamada"><span class="ico" style="width:28px;height:28px;"><svg><use href="#i-video"/></svg></span></button>
+        </div>
+      </div>
+      <div class="conversa" id="conversaVideo">
+        <div class="balao recebida">Vó, quero ver a senhora! ❤️<span class="hora">15:10</span></div>
+      </div>
+      <div class="pergunta-box" id="instrucaoVideo"><span class="ico"><svg><use href="#i-touch"/></svg></span> Toque no ícone da câmera lá em cima!</div>
+      <div id="chamadaVideo" style="display:none;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#0a7d6f,#075e54);color:#fff;flex:1;text-align:center;padding:20px;">
+        <div style="font-size:70px;background:#ffd54f;border-radius:50%;width:110px;height:110px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">🧒</div>
+        <h2 style="margin:6px;">Pedro (Neto)</h2>
+        <p id="statusVideo" style="opacity:.85;">Chamando...</p>
+        <button type="button" onclick="encerrarVideo()" aria-label="Encerrar videochamada" style="margin-top:24px;background:#e53935;color:#fff;border:none;width:64px;height:64px;border-radius:50%;font-size:28px;cursor:pointer;">📞</button>
+      </div>
+      <div id="sucessoVideo" style="display:none;background:#e8f5e9;color:#1b5e20;text-align:center;padding:24px;font-size:17px;font-weight:bold;flex:1;">
+        Muito bem! Você fez sua primeira videochamada!<br><br>
+        <button type="button" onclick="reiniciarVideo()" style="background:#25d366;color:#fff;border:none;padding:12px 22px;border-radius:25px;font-size:16px;cursor:pointer;">Praticar de novo 🔁</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <a href="../modulos.html" class="btn-inicio" aria-label="Voltar ao início"><span class="ico"><svg><use href="#i-home"/></svg></span> Voltar ao início</a>
+</footer>
+
+<script>
+  /* ===== LEITURA EM VOZ ALTA ===== */
+  let vozBR = null;
+  function carregarVoz(){
+    const vozes = speechSynthesis.getVoices();
+    vozBR = vozes.find(v=>v.lang==='pt-BR') || vozes.find(v=>v.lang.startsWith('pt')) || null;
+  }
+  carregarVoz();
+  if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=carregarVoz;
+
+  function limparEmojis(t){ return t.replace(/[^\wÀ-úçÇ\s,!?.:]/g,''); }
+
+  function ouvir(botao, texto){
+    if(!('speechSynthesis' in window)){ if(botao) alert('Seu aparelho não tem leitura de voz.'); return; }
+
+    if(botao && speechSynthesis.speaking){
+      speechSynthesis.cancel();
+      document.querySelectorAll('.btn-ouvir.falando').forEach(b=>b.classList.remove('falando'));
+      return;
+    }
+
+    speechSynthesis.cancel();
+    document.querySelectorAll('.btn-ouvir.falando').forEach(b=>b.classList.remove('falando'));
+
+    const fala = new SpeechSynthesisUtterance(limparEmojis(texto));
+    fala.lang='pt-BR'; if(vozBR) fala.voice=vozBR;
+    fala.rate=0.85; fala.pitch=1; fala.volume=1;
+
+    if(botao) botao.classList.add('falando');
+
+    fala.onend=()=>{ if(botao) botao.classList.remove('falando'); };
+
+    speechSynthesis.speak(fala);
+  }
+
+  function normalizar(t){ return t.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+  function respostaValida(texto,palavras){ const l=normalizar(texto); return palavras.some(p=>l.includes(normalizar(p))); }
+
+  const IC = {
+    send:'<span class="ico"><svg><use href="#i-send"/></svg></span>',
+    check2:'<span class="ico"><svg><use href="#i-check2"/></svg></span>',
+    mic:'<span class="ico"><svg><use href="#i-mic"/></svg></span>',
+    dots:'<span class="ico"><svg><use href="#i-dots"/></svg></span>',
+    save:'<span class="ico"><svg><use href="#i-save"/></svg></span>',
+    back:'<span class="ico"><svg><use href="#i-back"/></svg></span>',
+    sound:'<span class="ico"><svg><use href="#i-sound"/></svg></span>',
+    touch:'<span class="ico"><svg><use href="#i-touch"/></svg></span>',
+    camera:'<span class="ico"><svg><use href="#i-camera"/></svg></span>'
+  };
+
+  const atividades = [
+    { tipo:'digitar', foto:'👩', contato:'Maria (Filha)',
+      conversa:[{tipo:'recebida',texto:'Oi mãe! Já almoçou? 😊',hora:'14:02'}],
+      instrucao:'Escreva uma resposta carinhosa e toque em enviar',
+      palavrasBoas:['sim','almocei','comi','oi','ola','filha','tudo bem'],
+      explica:'Que resposta carinhosa! Sua filha vai adorar.' },
+    { tipo:'tirar-foto', foto:'👧', contato:'Ana (Neta)',
+      conversa:[{tipo:'recebida',texto:'Vó, manda uma foto sua! 😍',hora:'14:20'}],
+      instrucao:'Toque no ícone de câmera para tirar uma foto!',
+      explica:'Perfeito! Você tirou a foto e enviou para sua neta!' },
+    { tipo:'foto-salvar', foto:'👨', contato:'Pedro (Neto)',
+      conversa:[{tipo:'recebida',texto:'Vó, olha essa foto!',hora:'15:10'}],
+      instrucao:'Toque na foto para abrir ela grande!',
+      instrucaoAudio:'Toque em cima da foto para abrir ela bem grande.',
+      explica:'Muito bem! Você abriu, viu de perto e salvou a foto!' },
+    { tipo:'audio', foto:'👵', contato:'Dona Lúcia (Vizinha)',
+      conversa:[{tipo:'recebida',texto:'Não consigo te ouvir bem 😕',hora:'08:00'}],
+      instrucao:'Segure o microfone, "fale" sua mensagem e só solte depois!',
+      explica:'Isso! Segurou, falou com calma e soltou para enviar.' },
+    { tipo:'tracos', foto:'👨', contato:'Pedro (Neto)',
+      conversa:[{tipo:'enviada',texto:'Te amo, meu neto! ❤️',hora:'16:00',tracos:'azul'}],
+      pergunta:'Veja os tracinhos azuis na sua mensagem. O que isso quer dizer?',
+      opcoes:[{texto:'Seu neto JÁ LEU a mensagem',certa:true},
+              {texto:'A mensagem não foi enviada',certa:false},
+              {texto:'O celular está com defeito',certa:false}],
+      explica:'Exato! Dois tracinhos AZUIS = a pessoa já leu sua mensagem.' }
+  ];
+  let atual=0, acertos=0, jaPontuou=false;
+  const elProg=document.getElementById('progresso');
+  const elFoto=document.getElementById('foto');
+  const elContato=document.getElementById('contato');
+  const elConversa=document.getElementById('conversa');
+  const elArea=document.getElementById('areaAtividade');
+  const elFeed=document.getElementById('feedback');
+  const elProx=document.getElementById('btnProximo');
+
+  carregar();
+
+  function carregar(){
+    const a=atividades[atual]; jaPontuou=false;
+    elProg.textContent='Situação '+(atual+1)+' de '+atividades.length;
+    elFoto.textContent=a.foto; elContato.textContent=a.contato;
+    elConversa.innerHTML='';
+    a.conversa.forEach(m=>{
+      const b=document.createElement('div'); b.className='balao '+m.tipo;
+      let extra='';
+      if(m.tracos==='azul') extra=' <span class="tracos-grande azul">'+IC.check2+'</span>';
+      if(a.tipo==='foto-salvar'){
+        b.innerHTML='<div class="foto-msg" onclick="abrirFoto()">🌻</div><span class="hora">'+m.hora+'</span>';
+      } else {
+        b.innerHTML=m.texto+extra+'<span class="hora">'+m.hora+'</span>';
+        if(m.tipo==='recebida'){
+          const btn=document.createElement('button');
+          btn.type='button';
+          btn.className='btn-ouvir';
+          btn.setAttribute('aria-label','Ouvir a mensagem recebida');
+          btn.innerHTML=IC.sound;
+          btn.onclick=function(){ ouvir(btn,m.texto); };
+          b.appendChild(btn);
+        }
+      }
+      elConversa.appendChild(b);
+    });
+    elFeed.style.display='none'; elProx.style.display='none'; elArea.innerHTML='';
+    if(a.tipo==='digitar') montarDigitar(a);
+    else if(a.tipo==='tirar-foto') montarTirarFoto(a);
+    else if(a.tipo==='foto-salvar') montarFoto(a);
+    else if(a.tipo==='audio') montarAudio(a);
+    else montarEscolha(a);
+  }
+
+  function montarDigitar(a){
+    elArea.innerHTML=
+      '<div class="instrucao">'+a.instrucao+
+        ' <button type="button" class="btn-ouvir" aria-label="Ouvir instrução" '+
+        'onclick="ouvir(this, \'Escreva uma resposta carinhosa e toque no botão verde para enviar.\')">'+IC.sound+'</button></div>'+
+      '<div class="campo-digitar"><input type="text" id="entradaTexto" placeholder="Digite aqui..." aria-label="Campo para escrever a mensagem">'+
+        '<button type="button" class="btn-enviar" aria-label="Enviar mensagem" onclick="enviarTexto()">'+IC.send+'</button></div>';
+  }
+  function enviarTexto(){
+    const campo=document.getElementById('entradaTexto'); const texto=campo.value;
+    if(texto.trim()===''){ alert('Escreva algo antes de enviar!'); return; }
+    const b=document.createElement('div'); b.className='balao enviada';
+    b.innerHTML=texto+' <span class="tracos-grande">'+IC.check2+'</span><span class="hora">agora</span>';
+    elConversa.appendChild(b); elConversa.scrollTop=elConversa.scrollHeight; campo.disabled=true;
+    const a=atividades[atual];
+    if(respostaValida(texto,a.palavrasBoas)) pontuar(true,a.explica);
+    else { mostrarFeed(false,'Tente algo gentil, como "Oi filha, já almocei sim!"'); campo.disabled=false; campo.value=''; }
+  }
+
+  /* ===== TIRAR FOTO E ENVIAR ===== */
+  function montarTirarFoto(a){
+    elArea.innerHTML=
+      '<div class="instrucao" id="instrucaoTirar">'+a.instrucao+
+        ' <button type="button" class="btn-ouvir" aria-label="Ouvir instrução" '+
+        'onclick="ouvir(this, \'Toque no ícone de câmera para tirar uma foto e enviar para sua neta.\')">'+IC.sound+'</button></div>'+
+      '<div class="campo-digitar">'+
+        '<input type="text" placeholder="Mensagem" aria-label="Campo de mensagem" disabled style="opacity:.6;">'+
+        '<button type="button" class="btn-enviar" id="btnAbrirCamera" aria-label="Abrir a câmera" '+
+          'onclick="abrirCamera()" style="animation:pisca 1.2s infinite;">'+IC.camera+'</button>'+
+      '</div>'+
+      '<div class="foto-grande" id="telaCamera">'+
+        '<div class="topo-foto"></div>'+
+        '<div class="imagem" style="font-size:90px;">📷</div>'+
+        '<div style="padding:20px;display:flex;justify-content:center;">'+
+          '<button type="button" onclick="tirarFoto()" aria-label="Tirar a foto" '+
+            'style="width:74px;height:74px;border-radius:50%;background:#fff;border:5px solid #25d366;cursor:pointer;"></button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="foto-grande" id="telaConfirmar">'+
+        '<div class="topo-foto"></div>'+
+        '<div class="imagem" style="font-size:110px;">🤳</div>'+
+        '<div style="padding:18px;display:flex;gap:12px;justify-content:center;">'+
+          '<button type="button" onclick="refazerFoto()" aria-label="Tirar outra foto" '+
+            'style="background:#e53935;color:#fff;border:none;padding:14px 18px;border-radius:25px;font-size:16px;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:6px;">'+IC.back+' Refazer</button>'+
+          '<button type="button" onclick="enviarFoto()" aria-label="Enviar a foto" '+
+            'style="background:#25d366;color:#fff;border:none;padding:14px 20px;border-radius:25px;font-size:16px;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:6px;">'+IC.send+' Enviar</button>'+
+        '</div>'+
+      '</div>';
+  }
+  function abrirCamera(){
+    document.getElementById('telaCamera').style.display='flex';
+    document.getElementById('instrucaoTirar').firstChild.textContent='Toque no botão branco para tirar a foto! ';
+  }
+  function tirarFoto(){
+    document.getElementById('telaCamera').style.display='none';
+    document.getElementById('telaConfirmar').style.display='flex';
+    document.getElementById('instrucaoTirar').firstChild.textContent='Gostou? Toque em Enviar! ';
+  }
+  function refazerFoto(){
+    document.getElementById('telaConfirmar').style.display='none';
+    document.getElementById('telaCamera').style.display='flex';
+    document.getElementById('instrucaoTirar').firstChild.textContent='Toque no botão branco para tirar outra foto! ';
+  }
+  function enviarFoto(){
+    document.getElementById('telaConfirmar').style.display='none';
+    const b=document.createElement('div'); b.className='balao enviada';
+    b.innerHTML='<div class="foto-msg" style="background:linear-gradient(135deg,#b3e5fc,#4fc3f7);">🤳</div>'+
+      '<span class="tracos-grande">'+IC.check2+'</span><span class="hora">agora</span>';
+    elConversa.appendChild(b);
+    elConversa.scrollTop=elConversa.scrollHeight;
+    document.getElementById('btnAbrirCamera').disabled=true;
+    pontuar(true,atividades[atual].explica);
+  }
+
+  /* ===== VER E SALVAR FOTO (agora com áudio e enunciado claro) ===== */
+  function montarFoto(a){
+    elArea.innerHTML=
+      '<div class="instrucao" id="instrucaoFoto">'+a.instrucao+
+        ' <button type="button" class="btn-ouvir" id="btnOuvirFoto" aria-label="Ouvir instrução" '+
+        'onclick="ouvir(this, \''+a.instrucaoAudio+'\')">'+IC.sound+'</button></div>'+
+      '<div class="foto-grande" id="fotoGrande"><div class="topo-foto">'+
+        '<button type="button" class="pontos" aria-label="Abrir opções da foto" onclick="abrirMenuFoto()" title="Opções">'+IC.dots+'</button></div>'+
+        '<div class="imagem">🌻</div>'+
+        '<div class="menu-foto" id="menuFoto">'+
+          '<button type="button" onclick="salvarFoto()">'+IC.save+' Salvar</button>'+
+          '<button type="button" onclick="fecharFoto()">'+IC.back+' Voltar</button></div></div>';
+  }
+  function abrirFoto(){
+    document.getElementById('fotoGrande').style.display='flex';
+    document.getElementById('instrucaoFoto').firstChild.textContent='Agora toque nos 3 pontinhos lá em cima! ';
+    const btn=document.getElementById('btnOuvirFoto');
+    if(btn) btn.setAttribute('onclick',"ouvir(this, 'Agora toque nos três pontinhos no canto de cima da tela.')");
+  }
+  function abrirMenuFoto(){
+    document.getElementById('menuFoto').style.display='block';
+    document.getElementById('instrucaoFoto').firstChild.textContent='Toque em "Salvar" para guardar a foto! ';
+    const btn=document.getElementById('btnOuvirFoto');
+    if(btn) btn.setAttribute('onclick',"ouvir(this, 'Toque em Salvar para guardar a foto no celular.')");
+  }
+  function salvarFoto(){
+    document.getElementById('fotoGrande').style.display='none';
+    document.getElementById('menuFoto').style.display='none';
+    pontuar(true,atividades[atual].explica);
+  }
+  function fecharFoto(){ document.getElementById('fotoGrande').style.display='none'; document.getElementById('menuFoto').style.display='none'; }
+
+  /* ===== ÁUDIO ===== */
+  let inicioGravacao=0, gravando=false;
+  function montarAudio(a){
+    elArea.innerHTML=
+      '<div class="instrucao" id="instrucaoAudio">'+a.instrucao+
+        ' <button type="button" class="btn-ouvir" aria-label="Ouvir instrução" '+
+        'onclick="ouvir(this, \'Segure o microfone com o dedo, fale sua mensagem e só solte depois. Não solte rápido!\')">'+IC.sound+'</button></div>'+
+      '<div class="area-audio"><button type="button" class="btn-microfone" id="btnMic" aria-label="Segurar para gravar áudio">'+IC.mic+'</button>'+
+        '<div class="gravando-info" id="gravandoInfo">Gravando... fale!'+
+          '<span class="ondas"><span></span><span></span><span></span><span></span></span>'+
+          '<div class="solte-aviso">Solte para enviar</div></div></div>';
+    const btn=document.getElementById('btnMic');
+    btn.addEventListener('mousedown',function(e){e.preventDefault();comecarGravar();});
+    btn.addEventListener('mouseup',function(e){e.preventDefault();pararGravar();});
+    btn.addEventListener('mouseleave',function(){if(gravando)pararGravar();});
+    btn.addEventListener('touchstart',function(e){e.preventDefault();comecarGravar();},{passive:false});
+    btn.addEventListener('touchend',function(e){e.preventDefault();pararGravar();},{passive:false});
+    btn.addEventListener('touchcancel',function(){if(gravando)pararGravar();});
+  }
+  function comecarGravar(){
+    if(gravando) return; gravando=true; inicioGravacao=Date.now();
+    const btn=document.getElementById('btnMic'); if(!btn) return;
+    btn.classList.add('gravando');
+    document.getElementById('gravandoInfo').classList.add('ativo');
+    document.getElementById('instrucaoAudio').firstChild.textContent='Fale sua mensagem... e segure! ';
+  }
+  function pararGravar(){
+    if(!gravando) return; gravando=false;
+    const dur=Date.now()-inicioGravacao;
+    const btn=document.getElementById('btnMic'); if(!btn) return;
+    btn.classList.remove('gravando');
+    document.getElementById('gravandoInfo').classList.remove('ativo');
+    if(dur>=600){
+      const b=document.createElement('div'); b.className='balao enviada';
+      b.innerHTML=IC.mic+' Áudio (0:0'+Math.min(9,Math.max(1,Math.round(dur/1000)))+') ▶️ <span class="tracos-grande">'+IC.check2+'</span><span class="hora">agora</span>';
+      elConversa.appendChild(b); elConversa.scrollTop=elConversa.scrollHeight;
+      btn.disabled=true;
+      pontuar(true,atividades[atual].explica);
+    } else {
+      document.getElementById('instrucaoAudio').firstChild.textContent='Segure o microfone, "fale" e só solte depois! ';
+      mostrarFeed(false,'Ops! Soltou rápido demais. Segure e fale com calma antes de soltar!');
+    }
+  }
+
+  function montarEscolha(a){
+    let html='<div class="instrucao">'+a.pergunta+
+      ' <button type="button" class="btn-ouvir" aria-label="Ouvir pergunta" '+
+      'onclick="ouvir(this, \''+a.pergunta.replace(/'/g,'')+'\')">'+IC.sound+'</button></div><div class="opcoes">';
+    a.opcoes.forEach((o,i)=>{ html+='<button type="button" class="opc" onclick="responder('+i+', this)">'+o.texto+'</button>'; });
+    html+='</div>'; elArea.innerHTML=html;
+  }
+  function responder(indice,botao){
+    const a=atividades[atual]; const botoes=elArea.querySelectorAll('.opc');
+    botoes.forEach(b=>b.disabled=true);
+    if(a.opcoes[indice].certa){ botao.classList.add('certa'); pontuar(true,a.explica); }
+    else {
+      botao.classList.add('errada');
+      botoes.forEach((b,i)=>{ if(a.opcoes[i].certa) b.classList.add('certa'); });
+      mostrarFeed(false,'Quase! A verde é a correta. '+a.explica);
+      elProx.style.display='block';
+      elProx.textContent=(atual+1<atividades.length)?'Próxima ➤':'Ver resultado 🎉';
+    }
+  }
+
+  function pontuar(certo,msg){
+    if(certo && !jaPontuou){ acertos++; jaPontuou=true; }
+    mostrarFeed(true,msg); elProx.style.display='block';
+    elProx.textContent=(atual+1<atividades.length)?'Próxima ➤':'Ver resultado 🎉';
+  }
+
+  function mostrarFeed(acertou,msg){
+    elFeed.className='feedback '+(acertou?'acertou':'errou');
+    elFeed.textContent=msg; elFeed.style.display='block'; ouvir(null,msg);
+  }
+
+  function proxima(){
+    speechSynthesis.cancel(); atual++;
+    if(atual<atividades.length) carregar();
+    else finalizar();
+  }
+
+  function finalizar(){
+    document.getElementById('quiz').style.display='none'; elProg.style.display='none';
+    const res=document.getElementById('resultado'); res.style.display='block';
+    document.getElementById('nota').textContent=acertos+' / '+atividades.length;
+    const pct=(acertos/atividades.length)*100;
+    setTimeout(()=>{ document.getElementById('barra').style.width=pct+'%'; },200);
+    let msg='';
+    if(acertos===atividades.length) msg='Perfeito! Você já manda bem no WhatsApp!';
+    else if(acertos>=3) msg='Muito bem! Continue praticando suas conversas!';
+    else msg='Não desanime! Pratique mais um pouquinho. Você consegue!';
+    document.getElementById('mensagemFinal').textContent=msg;
+    ouvir(null,'Você terminou! Sua nota foi '+acertos+' de '+atividades.length+'. '+msg);
+    registrarDesempenho('whatsapp',acertos,atividades.length);
+  }
+  function registrarDesempenho(chave,acertos,total){
+    try{
+      const dados=JSON.parse(localStorage.getItem('conectaIdoso_desempenho')||'{}');
+      dados[chave]={acertos:acertos,total:total,data:new Date().toLocaleDateString('pt-BR')};
+      localStorage.setItem('conectaIdoso_desempenho',JSON.stringify(dados));
+    }catch(e){ /* localStorage indisponível */ }
+  }
+
+  function iniciarVideo(){
+    document.getElementById('cabecalhoVideo').style.display='none';
+    document.getElementById('conversaVideo').style.display='none';
+    document.getElementById('instrucaoVideo').style.display='none';
+    document.getElementById('chamadaVideo').style.display='flex';
+    setTimeout(function(){ document.getElementById('statusVideo').textContent='Conectado! Sorria!'; },2000);
+  }
+  function encerrarVideo(){
+    document.getElementById('chamadaVideo').style.display='none';
+    document.getElementById('sucessoVideo').style.display='block';
+  }
+  function reiniciarVideo(){
+    document.getElementById('sucessoVideo').style.display='none';
+    document.getElementById('cabecalhoVideo').style.display='flex';
+    document.getElementById('conversaVideo').style.display='flex';
+    document.getElementById('instrucaoVideo').style.display='block';
+    document.getElementById('statusVideo').textContent='Chamando...';
+  }
+</script>
+</body>
+</html>
