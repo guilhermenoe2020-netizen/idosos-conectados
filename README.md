@@ -1,4 +1,4 @@
-# 👵📱 Idosos Conectados
+# Idosos Conectados
 
 ![Status](https://img.shields.io/badge/status-beta-yellow)
 ![PWA](https://img.shields.io/badge/PWA-enabled-blue)
@@ -9,7 +9,7 @@
 
 ## 🌐 Demonstração
 
-👉 https://idosos-conectados.netlify.app/
+ https://idosos-conectados.netlify.app/
 
 ---
 
@@ -86,19 +86,19 @@ O projeto foi pensado para facilitar o uso por pessoas com pouca familiaridade d
 
 ## 📸 Telas do Sistema
 
-### 🏠 Tela inicial (PC)
+###  Tela inicial (PC)
 ![Home PC](assets/screenshots/home-pc.png)
 
-### 📱 Tela inicial (Mobile)
+###  Tela inicial (Mobile)
 ![Home Mobile](assets/screenshots/home-mobile.png)
 
-### 📚 Módulos (PC)
+###  Módulos (PC)
 ![Módulos PC](assets/screenshots/modulos-pc.png)
 
-### 📱 Módulos (Mobile)
+###  Módulos (Mobile)
 ![Módulos Mobile](assets/screenshots/modulos-mobile.png)
 
-### ♿ Acessibilidade
+###  Acessibilidade
 ![Acessibilidade](assets/screenshots/acessibilidade.png)
 
 ---
@@ -121,9 +121,9 @@ conecta-idosos/
 
 ---
 
-## 🚀 Status
+## 🟡 Status
 
-Projeto em versão beta, funcionando e em evolução.
+Projeto em desenvolvimento.
 
 ---
 
