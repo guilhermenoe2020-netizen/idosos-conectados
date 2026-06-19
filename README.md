@@ -1,144 +1,158 @@
-# Idosos Conectados
+# 👵📱 Idosos Conectados
 
-**Projeto em Desenvolvimento**
-
-Aplicação web desenvolvida como projeto interdisciplinar do curso de Análise e Desenvolvimento de Sistemas (ADS), com foco na inclusão digital de idosos por meio de conteúdos educativos, acessibilidade e orientação sobre o uso seguro da tecnologia.
-
----
-
-## Objetivo
-
-O projeto **Idosos Conectados** foi criado para auxiliar idosos no aprendizado e utilização de ferramentas digitais do dia a dia, promovendo autonomia, segurança e inclusão digital.
+![Status](https://img.shields.io/badge/status-beta-yellow)
+![PWA](https://img.shields.io/badge/PWA-enabled-blue)
+![Accessibility](https://img.shields.io/badge/accessibility-focus-green)
+![License](https://img.shields.io/badge/license-academic-lightgrey)
 
 ---
 
-## Funcionalidades
+## 🌐 Demonstração
 
-* Interface simples e intuitiva
-* Navegação adaptada para idosos
-* Recursos de acessibilidade
-* Aumento e redução de fonte
-* Alto contraste
-* Conteúdo educativo organizado em módulos
-* Instalação como aplicativo (PWA)
-* Layout responsivo para computadores e celulares
+👉 https://idosos-conectados.netlify.app/
 
 ---
 
-## Módulos Disponíveis
+## 📌 Sobre o Projeto
 
-* 📱 Uso do Celular
-* 💬 WhatsApp
-* 💳 PIX
-* 🤖 Inteligência Artificial
-* 🔒 Segurança Digital
-* ⚠️ Prevenção de Golpes
-* 👨‍👩‍👧 Apoio para Familiares
+O **Idosos Conectados** é uma aplicação web criada para ajudar idosos a usarem tecnologia de forma mais simples e segura.
+
+A ideia nasceu da dificuldade real que muitas pessoas idosas têm com ferramentas como WhatsApp, PIX e navegação básica na internet.
+
+O foco do projeto é ser simples, direto e fácil de entender, sem excesso de informação ou complicação.
 
 ---
 
-## Tecnologias Utilizadas
+## 🎯 Problema
 
-* HTML5
-* CSS3
-* JavaScript
-* Progressive Web App (PWA)
-* Manifest.json
-* Service Worker
+Muitos idosos enfrentam dificuldades no uso da tecnologia no dia a dia, como:
+
+- Dificuldade para usar aplicativos básicos  
+- Falta de orientação clara  
+- Exposição a golpes digitais  
+- Dependência de outras pessoas para tarefas simples  
 
 ---
 
-# Capturas de Tela
+## 💡 Solução
 
-## Tela Inicial (Desktop)
+Criar uma plataforma educativa que ensina o uso da tecnologia de forma prática, com linguagem simples e módulos separados por tema.
 
-![Tela Inicial Desktop](assets/screenshots/home-pc.png)
+---
 
-## Tela Inicial (Mobile)
+## ⚙️ Funcionalidades
 
-![Tela Inicial Mobile](assets/screenshots/home-mobile.png)
+- Interface simples e fácil de usar  
+- Modo de acessibilidade (fonte maior e contraste)  
+- Conteúdo dividido em módulos  
+- Design responsivo (celular e computador)  
+- Aplicação instalável (PWA)  
+- Navegação leve e rápida  
 
-## Módulos (Desktop)
+---
 
-![Módulos Desktop](assets/screenshots/modulos-pc.png)
+## 📚 Módulos
 
-## Módulos (Mobile)
+- 📱 Uso do celular  
+- 💬 WhatsApp  
+- 💳 PIX  
+- 🤖 Inteligência Artificial (introdução)  
+- 🔒 Segurança digital  
+- ⚠️ Golpes e fraudes  
+- 👨‍👩‍👧 Apoio para familiares  
 
+---
+
+## 🧠 Tecnologias
+
+- HTML5  
+- CSS3  
+- JavaScript (Vanilla)  
+- PWA (Service Worker + Manifest)
+
+---
+
+## ♿ Acessibilidade
+
+O projeto foi pensado para facilitar o uso por pessoas com pouca familiaridade digital:
+
+- Fonte ajustável  
+- Alto contraste  
+- Layout simples  
+- Menos distrações visuais  
+- Navegação direta  
+
+---
+
+## 📸 Telas do Sistema
+
+### 🏠 Tela inicial (PC)
+![Home PC](assets/screenshots/home-pc.png)
+
+### 📱 Tela inicial (Mobile)
+![Home Mobile](assets/screenshots/home-mobile.png)
+
+### 📚 Módulos (PC)
+![Módulos PC](assets/screenshots/modulos-pc.png)
+
+### 📱 Módulos (Mobile)
 ![Módulos Mobile](assets/screenshots/modulos-mobile.png)
 
-## Recursos de Acessibilidade
-
+### ♿ Acessibilidade
 ![Acessibilidade](assets/screenshots/acessibilidade.png)
 
 ---
 
-## Estrutura do Projeto
+## 📁 Estrutura do projeto
 
-```text
+```bash
 conecta-idosos/
-
+├── assets/
+│   └── screenshots/
 ├── icons/
-│   ├── 192.png
-│   ├── 512.png
-│   └── favicon.png
-│
 ├── js/
-│   └── desempenho.js
-│
 ├── paginas/
-│   ├── celular.html
-│   ├── familia.html
-│   ├── golpe.html
-│   ├── ia.html
-│   ├── pix.html
-│   ├── seguranca.html
-│   └── whatsapp.html
-│
-│
-├── sw.js/
-│   └── sw.js
-│
 ├── index.html
 ├── modulos.html
 ├── manifest.json
-│
-└──│
+├── sw.js/
+└── README.md
 ```
 
 ---
 
-## Status do Projeto
+## 🚀 Status
 
-Versão Beta para testes, validação e melhorias contínuas.
-
----
-
-## Limitações Conhecidas
-
-* Algumas funcionalidades de acessibilidade ainda não estão disponíveis em todas as páginas.
-* O modo de alto contraste ainda precisa ser padronizado entre os módulos.
-* Algumas partes do código ainda precisam de refatoração e modularização.
-* O projeto continua em evolução com novas melhorias planejadas.
+Projeto em versão beta, funcionando e em evolução.
 
 ---
 
-## Público-Alvo
+## 👥 Público
 
-* Idosos que desejam aprender a utilizar tecnologias digitais.
-* Familiares que auxiliam idosos.
-* Projetos de inclusão digital.
-* Instituições educacionais e comunitárias.
+- Idosos em processo de inclusão digital  
+- Familiares que ajudam idosos  
+- Projetos educacionais  
+- Iniciativas sociais de tecnologia  
 
 ---
 
-## Autor
+## 🤝 Contribuições
+
+Sugestões e melhorias são bem-vindas.
+
+Abra uma issue ou envie um pull request.
+
+---
+
+## 👨‍💻 Autor
 
 **Guilherme Noé de Albuquerque**
 
-Projeto desenvolvido como atividade interdisciplinar do curso de Análise e Desenvolvimento de Sistemas (ADS).
+Projeto acadêmico de ADS (Análise e Desenvolvimento de Sistemas).
 
 ---
 
-## Licença
+## 📄 Licença
 
-Projeto desenvolvido para fins acadêmicos e educacionais.
+Uso educacional e acadêmico.
+
